@@ -5,20 +5,20 @@ from dotenv import load_dotenv
 from pprint import pprint
 from chat import GPT
 from datetime import datetime
-import workYDB
+# import workYDB
 import json
 from loguru import logger
 import sys
-from createKeyboard import *
-from createKeyboard import *
+# from createKeyboard import *
+# from createKeyboard import *
 
-from helper import *
-from workGDrive import *
+# from helper imp/ort *
+# from workGDrive import *
 from telebot.types import InputMediaPhoto
 from workRedis import *
-import workGS
-from questions import *
-from questionsNoKeyboard import *
+# import workGS
+# from questions import *
+# from questionsNoKeyboard import *
 from flask import Flask, request, render_template
 import requests
 
@@ -36,10 +36,10 @@ logger.add("file_1.log", rotation="50 MB")
 # GPT.set_key(os.getenv('KEY_AI'))
 # bot = telebot.TeleBot(os.getenv('TELEBOT_TOKEN'))
 # sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','Ссылки на изображения')
-sql = workYDB.Ydb()
+# sql = workYDB.Ydb()
 
-TYPE_QUESTIONS = {'profNastil': questionProfNastil,
-                  'evroShtak':questionEvroShtak} 
+# TYPE_QUESTIONS = {'profNastil': questionProfNastil,
+#                   'evroShtak':questionEvroShtak} 
 # TYPE_QUESTIONS = {'Профнастил': questionProfNastil,
 #                   'Евроштакетник':questionEvroShtak} 
 URL_USERS = {}

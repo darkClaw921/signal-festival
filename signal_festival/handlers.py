@@ -30,18 +30,18 @@ from aiogram.types import (
 from dotenv import load_dotenv
 import os
 from chat import GPT
-import postgreWork 
-import chromaDBwork
+# import postgreWork 
+# import chromaDBwork
 from loguru import logger
 from workRedis import *
 # from calendarCreate import create_calendar
-from helper import create_db,convert_text_to_variables,create_db2,get_next_weekend,find_and_format_date,find_patterns_date,create_db_for_user
+# from helper import create_db,convert_text_to_variables,create_db2,get_next_weekend,find_and_format_date,find_patterns_date,create_db_for_user
 from datetime import datetime,timedelta
-from workGS import Sheet
+# from workGS import Sheet
 import uuid
 import time
-import speech_recognition as sr
-from promt import clasificatorPromt
+# import speech_recognition as sr
+# from promt import clasificatorPromt
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
@@ -51,9 +51,9 @@ gpt=GPT()
 
 
 USER_EVENTS={}
-ids=postgreWork.get_all_user_ids()
-for id in ids:
-    USER_EVENTS[id]=[]
+# ids=postgreWork.get_all_user_ids()
+# for id in ids:
+#     USER_EVENTS[id]=[]
 # textAllPosts=create_db()
 # create_db2()
 # model_index=gpt.load_search_indexes(textAllPosts)
@@ -92,25 +92,26 @@ class Form(StatesGroup):
 router = Router()
 
 bot = Bot(token=TOKEN,)
-sheet = Sheet('profzaboru-5f6f677a3cd8.json','Афиша - Разработка бота')
+# sheet = Sheet('profzaboru-5f6f677a3cd8.json','Афиша - Разработка бота')
 
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
     userID=msg.chat.id
     # lang = await sql.get_lang(userID)
     # text = langList[lang]
-    nickname=msg.from_user.username
-    try: 
-        postgreWork.add_new_user(userID,nickname)
-        postgreWork.update_model(userID,'gpt')
-    except:
-        1+0
+    # nickname=msg.from_user.username
+    # try: 
+    #     postgreWork.add_new_user(userID,nickname)
+    #     postgreWork.update_model(userID,'gpt')
+    # except:
+    #     1+0
     # # await state.set_state(Form.selectLang)
     # mess='Здравствуйте, я агрегатор мероприятий бали, проосто напишите куда и когда хотите сходить. Например(12.03 йога) или (завтра танцы) '
-    mess="""Привет! Я твой персональный помощник в поиске идеальных мероприятий и развлечений на острове Бали🌴 
-Можешь общаться со мной на естественном языке, будь то текст или голосовые сообщения, и рассказать мне о своих предпочтениях. Я помогу подобрать для тебя что-то особенное 💫
+#     mess="""Привет! Я твой персональный помощник в поиске идеальных мероприятий и развлечений на острове Бали🌴 
+# Можешь общаться со мной на естественном языке, будь то текст или голосовые сообщения, и рассказать мне о своих предпочтениях. Я помогу подобрать для тебя что-то особенное 💫
 
-Какой тип событий тебя интересует?"""
+# Какой тип событий тебя интересует?"""
+    mess='Привет! Я - комьюнити-менеджер фестиваля "Сигнал". Чем я могу помочь?'
     await msg.answer(mess)
     return 0
 
@@ -170,7 +171,7 @@ async def message(msg: CallbackQuery):
     return 0
 
 language='ru_RU'
-r = sr.Recognizer()
+# r = sr.Recognizer()
 
 def recognise(filename):
     with sr.AudioFile(filename) as source:
@@ -231,18 +232,18 @@ async def message(msg: Message, state: FSMContext):
     messText = msg.text
     userName = msg.from_user.username 
     # pprint(msg.__dict__)
-    typeModel = postgreWork.get_model(userID)
+    # typeModel = postgreWork.get_model(userID)
 
-    if typeModel == 'assis':
-        answer, token, tokenPrice=gpt.answer_assistant(messText,1,userID)
-        dateNow = datetime.now().strftime("%d.%m.%Y")
-        await msg.answer(answer)
-        lst=[userName,dateNow, messText, answer, 'assis']
-        postgreWork.add_statistick(userName=userName, text=messText, 
-                                   queryText=answer, token=token, 
-                                   tokenPrice=tokenPrice, theme='assis')
-        sheet.insert_cell(data=lst)
-        return 0
+    # if typeModel == 'assis':
+    #     answer, token, tokenPrice=gpt.answer_assistant(messText,1,userID)
+    #     dateNow = datetime.now().strftime("%d.%m.%Y")
+    #     await msg.answer(answer)
+    #     lst=[userName,dateNow, messText, answer, 'assis']
+    #     postgreWork.add_statistick(userName=userName, text=messText, 
+    #                                queryText=answer, token=token, 
+    #                                tokenPrice=tokenPrice, theme='assis')
+    #     sheet.insert_cell(data=lst)
+    #     return 0
 
     
 
@@ -268,8 +269,12 @@ async def message(msg: Message, state: FSMContext):
 
     date=datetime.now().strftime("%d.%m.%Y %A")
     # promt = f'Ты бот-помошник, который помогает пользователю найти мероприятие, которое ему подходит. Учитывай что сегодня {date}.  вот список мероприятий:'
-    promt=gpt.load_prompt('https://docs.google.com/document/d/1oezrKsyGHXFie9BZxDLKVJwth8fZEcUq3jyZekL-oNo/edit?usp=sharing')
+    # promt=gpt.load_prompt('https://docs.google.com/document/d/1oezrKsyGHXFie9BZxDLKVJwth8fZEcUq3jyZekL-oNo/edit?usp=sharing')
+    promt=gpt.load_prompt('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
+    promt2=gpt.load_prompt('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
+    promt=promt+promt2
     promt=promt.replace('[dateNow]',date)
+    # promt2=
     # answer=gpt.answer_index(system=promt,topic=messText,history=history,search_index=model_index,verbose=False)
     answer = gpt.answer(promt, history, 1)
     token=answer[1]
@@ -280,10 +285,12 @@ async def message(msg: Message, state: FSMContext):
     # pprint(answer)
     # exitText = answer.find('Закончил опрос: 1')
     
-    answerTools=gpt.asnwer_tools(history=history)
-    
+    # answerTools=gpt.asnwer_tools(history=history)
+    # answerTools=gpt.asnwer_tools(history=history)
+    answerTools=[]
     # pprint(answerTools)
-    if answerTools != []:
+    # if answerTools != [45]:
+    if answerTools == [45]:
         typeTool=answerTools[0]['type']
         if typeTool == 'conduct_dialogue':
             add_message_to_history(msg.chat.id, 'system', answer) 
@@ -406,12 +413,12 @@ async def message(msg: Message, state: FSMContext):
     add_message_to_history(msg.chat.id, 'system', answer) 
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     dateNow = datetime.now().strftime("%d.%m.%Y")
-    await msg.answer(answer)
+    await msg.answer(answer, parse_mode='MarkdownV2')
    
 
-    postgreWork.add_statistick(userName=userName, text=messText, 
-                               queryText=answer, token=token, 
-                               tokenPrice=tokenPrice, theme='gpt')
+    # postgreWork.add_statistick(userName=userName, text=messText, 
+    #                            queryText=answer, token=token, 
+    #                            tokenPrice=tokenPrice, theme='gpt')
     
     # lst=[userName,dateNow, messText, answer, 'gpt']
     # sheet.insert_cell(data=lst)
