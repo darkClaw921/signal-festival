@@ -413,7 +413,7 @@ async def message(msg: Message, state: FSMContext):
     add_message_to_history(msg.chat.id, 'system', answer) 
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     dateNow = datetime.now().strftime("%d.%m.%Y")
-    await msg.answer(answer, parse_mode='MarkdownV2')
+    await msg.answer(answer, parse_mode='Markdown')
    
 
     # postgreWork.add_statistick(userName=userName, text=messText, 
