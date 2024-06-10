@@ -270,8 +270,12 @@ async def message(msg: Message, state: FSMContext):
     date=datetime.now().strftime("%d.%m.%Y %A")
     # promt = f'Ты бот-помошник, который помогает пользователю найти мероприятие, которое ему подходит. Учитывай что сегодня {date}.  вот список мероприятий:'
     # promt=gpt.load_prompt('https://docs.google.com/document/d/1oezrKsyGHXFie9BZxDLKVJwth8fZEcUq3jyZekL-oNo/edit?usp=sharing')
-    promt=gpt.load_prompt('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
-    promt2=gpt.load_prompt('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
+    try:
+        promt=gpt.load_prompt('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
+        promt2=gpt.load_prompt('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
+    except:
+        promt=gpt.load_prompt('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
+        promt2=gpt.load_prompt('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
     promt=promt+promt2
     promt=promt.replace('[dateNow]',date)
     # promt2=
