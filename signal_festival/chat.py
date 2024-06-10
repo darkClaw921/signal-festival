@@ -1,8 +1,8 @@
-from langchain.llms import OpenAI
+# from langchain.llms import OpenAI
 from langchain.docstore.document import Document
 import requests
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.prompts import PromptTemplate
 import ipywidgets as widgets
@@ -10,7 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import re
 from dotenv import load_dotenv
 load_dotenv()
-from openai import OpenAI
+from langchain_community.llms import OpenAI
 import os
 
 import tiktoken
