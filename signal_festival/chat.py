@@ -1,4 +1,5 @@
 # from langchain.llms import OpenAI
+
 from langchain.docstore.document import Document
 import requests
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -10,7 +11,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 import re
 from dotenv import load_dotenv
 load_dotenv()
-from langchain_community.llms import OpenAI
+# from langchain_community.llms import OpenAI
+# from langchain_openai import OpenAI
+from openai import OpenAI
 import os
 
 import tiktoken
@@ -23,7 +26,8 @@ import httpx
 #logger.add("file_1.log", rotation="50 MB")
 #sheet = workGS.Sheet('kgtaprojects-8706cc47a185.json','цены на дома 4.0 актуально ')
 key = os.environ.get('OPENAI_API_KEY')
-client = OpenAI(api_key=key,)
+# client = OpenAI(api_key=key,model="gpt-3.5-turbo-16k")
+client = OpenAI(api_key=key)
 # http_client=httpx.Client(
 #         proxies="socks5://91.149.222.52:1080",
 #         # transport=httpx.HTTPTransport(local_address="0.0.0.0"),
@@ -149,7 +153,42 @@ class GPT():
     allTokenPrice = f'ЦЕНА запроса с ответом :{0.002*(totalToken/1000)} $'
     #return f'{completion.choices[0].message.content}\n\n{allToken}\n{allTokenPrice}', completion["usage"]["total_tokens"], 0.002*(completion["usage"]["total_tokens"]/1000)
     return f'{answerText}', totalToken, 0.002*(totalToken/1000)
-  
+
+  # def answer(self, system, topic: list, temp=1):
+  #       """
+  #       Формирует запрос к модели на основе предоставленных параметров и возвращает ответ, количество использованных токенов и стоимость запроса.
+
+  #       :param system: системное сообщение для настройки модели
+  #       :param topic: список сообщений пользователя
+  #       :param temp: параметр temperature для настройки креативности модели
+  #       :return: ответ модели, количество использованных токенов, стоимость запроса
+  #       """
+  #   #      """messages = [
+  #   #   {"role": "system", "content": system},
+  #   #   {"role": "user", "content": topic}
+  #   #   ]
+  #   # """
+  #       messages = [
+  #       {"role": "system", "content": system },
+  #         #{"role": "user", "content": topic}
+  #         #{"role": "user", "content": context}
+  #         ]
+  #       messages.extend(topic)
+        
+  #       completion = client.invoke(
+  #           messages=messages,
+  #           temperature=temp
+  #       )
+
+  #       total_tokens = completion['usage']['total_tokens']
+  #       answer_text = completion['choices'][0]['message']['content']
+
+  #       all_tokens = f'{total_tokens} токенов использовано всего (вопрос-ответ).'
+  #       all_token_price = f'ЦЕНА запроса с ответом: {0.002 * (total_tokens / 1000):.6f} $'
+
+  #       return answer_text, total_tokens, 0.002 * (total_tokens / 1000)  
+
+
   @logger.catch
   def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):
     """Returns the number of tokens used by a list of messages."""
