@@ -253,7 +253,7 @@ async def message(msg: Message, state: FSMContext):
     
 
 
-    if len(history) > 20:
+    if len(history) > 5:
         clear_history(msg.chat.id)
         add_message_to_history(msg.chat.id, 'user', msg.text)
         history = get_history(msg.chat.id) 
@@ -280,7 +280,11 @@ async def message(msg: Message, state: FSMContext):
     promt=promt.replace('[dateNow]',date)
     # promt2=
     # answer=gpt.answer_index(system=promt,topic=messText,history=history,search_index=model_index,verbose=False)
-    answer = gpt.answer(promt, history, 1)
+    try:
+        answer = gpt.answer(promt, history, 1)
+    except:
+        history=get_history(userID)[-2:]
+        answer = gpt.answer(promt, history, 1)
     token=answer[1]
     tokenPrice=answer[2]
     answer=answer[0]
