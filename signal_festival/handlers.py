@@ -223,7 +223,13 @@ async def voice_processing(msg: Message, state: FSMContext):
     pprint(msg1.__dict__)
     await message(msg1, state)  
 
-
+def split_string_in_half(s):
+    # Находим середину строки
+    mid = len(s) // 2
+    # Обрезаем строку пополам
+    first_half = s[:mid]
+    second_half = s[mid:]
+    return first_half, second_half
 #Обработка сообщений
 @router.message()
 async def message(msg: Message, state: FSMContext):
@@ -280,6 +286,7 @@ async def message(msg: Message, state: FSMContext):
     promt=promt.replace('[dateNow]',date)
     # promt2=
     # answer=gpt.answer_index(system=promt,topic=messText,history=history,search_index=model_index,verbose=False)
+    promt, promt2=split_string_in_half(promt)
     try:
         answer = gpt.answer(promt, history, 1)
     except:
