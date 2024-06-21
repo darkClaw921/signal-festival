@@ -94,6 +94,8 @@ router = Router()
 bot = Bot(token=TOKEN,)
 # sheet = Sheet('profzaboru-5f6f677a3cd8.json','Афиша - Разработка бота')
 
+
+model_index=gpt.load_search_indexes('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
 @router.message(Command("start"))
 async def start_handler(msg: Message, state: FSMContext):
     userID=msg.chat.id
@@ -155,6 +157,15 @@ async def clear_handler(msg: Message, state: FSMContext):
 async def help_handler(msg: Message, state: FSMContext):
     mess="/start - начало работы\n/gpt - перейти в режим GPT\n/assis - перейти в режим ассистента\n/clear - очистить историю диалога"
     await msg.answer(mess)
+    return 0
+
+@router.message(Command("reset"))
+async def help_handler(msg: Message, state: FSMContext):
+    global model_index
+    mess="подождите 1 мин"
+    await msg.answer(mess)
+    model_index=gpt.load_search_indexes('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
+    await msg.answer('готово')
     return 0
 
 #Обработка калбеков
@@ -259,7 +270,7 @@ async def message(msg: Message, state: FSMContext):
     
 
 
-    if len(history) > 5:
+    if len(history) > 10:
         clear_history(msg.chat.id)
         add_message_to_history(msg.chat.id, 'user', msg.text)
         history = get_history(msg.chat.id) 
@@ -282,19 +293,22 @@ async def message(msg: Message, state: FSMContext):
     except:
         promt=gpt.load_prompt('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
         promt2=gpt.load_prompt('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
-    promt=promt+promt2
-    promt=promt.replace('[dateNow]',date)
+    # promt=promt+promt2
+    # promt=promt.replace('[dateNow]',date)
     # promt2=
     # answer=gpt.answer_index(system=promt,topic=messText,history=history,search_index=model_index,verbose=False)
-    promt, promt2=split_string_in_half(promt)
+    # promt, promt2=split_string_in_half(promt)
+
     try:
-        answer = gpt.answer(promt, history, 1)
+        answer, allToken, allTokenPrice, message_content = gpt.answer_index(promt, messText, history, model_index,temp=0.5, verbose=0)
+        # answer = gpt.answer(promt, history, 1)
     except:
         history=get_history(userID)[-2:]
-        answer = gpt.answer(promt, history, 1)
-    token=answer[1]
-    tokenPrice=answer[2]
-    answer=answer[0]
+        answer, allToken, allTokenPrice, message_content = gpt.answer_index(promt, messText, history, model_index,temp=0.5, verbose=0)
+        # answer = gpt.answer(promt, history, 1)
+    # token=answer[1]
+    # tokenPrice=answer[2]
+    # answer=answer[0]
     
     # answer=gpt.answer_index()
     # pprint(answer)

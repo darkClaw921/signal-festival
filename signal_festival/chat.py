@@ -235,7 +235,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     return message_content
  
 
-  def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0):
+  def answer_index(self, promt, topic, history:list, search_index, temp = 1, verbose = 0):
     
     #Выборка документов по схожести с вопросом 
     docs = search_index.similarity_search(topic, k=4)
@@ -245,7 +245,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 
     systemMess = 'Данные, на основании которых нужно продолжить диалог:'
     messages = [
-      {"role": "system", "content": system + f"{systemMess} {message_content}"},
+      {"role": "system", "content": promt + f"{systemMess} {message_content}"},
       {"role": "user", "content": 'Диалог с клиентом, который нужно продолжить:'},
       #{"role": "user", "content": context}
       ]
