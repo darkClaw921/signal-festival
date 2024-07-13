@@ -68,7 +68,7 @@ services:
 
   pgadmin:
     container_name: pgadmin_container
-    image: dpage/pgadmin4:7.2
+    image: dpage/pgadmin4:latest
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL} 
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -88,7 +88,7 @@ services:
 
   postgres_exporter:
     container_name: exporter_container
-    image: prometheuscommunity/postgres-exporter:v0.10.1
+    image: prometheuscommunity/postgres-exporter:latest
     environment:
       DATA_SOURCE_URI: "postgres:5432/habrdb?sslmode=disable"
       DATA_SOURCE_USER: ${DATA_SOURCE_USER}
