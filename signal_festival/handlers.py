@@ -212,7 +212,7 @@ async def voice_processing(msg: Message, state: FSMContext):
     
     text=transcript_audio(file_name_full)
     msg1=msg
-    await msg.reply(text)
+    # await msg.reply(text)
     os.remove(file_name_full)
   
     
