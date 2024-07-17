@@ -42,7 +42,7 @@ import uuid
 import time
 # import speech_recognition as sr
 # from promt import clasificatorPromt
-
+from translation import transcript_audio
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 # PAYMENTS_TOKEN = os.getenv('PAYMENTS_TOKEN')
