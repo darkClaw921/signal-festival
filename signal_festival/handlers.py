@@ -202,37 +202,24 @@ async def voice_processing(msg: Message, state: FSMContext):
     text = msg.text
     logger.debug(f'{text=}')
     filename = str(uuid.uuid4())
-    file_name_full="voice/"+filename+".ogg"
-    file_name_full_converted="ready/"+filename+".wav"
+    # file_name_full="voice/"+filename+".ogg"
+    file_name_full="voice/"+filename+".mp3"
+    # file_name_full_converted="ready/"+filename+".wav"
+    file_name_full_converted="ready/"+filename+".mp3"
     file_info = await bot.get_file(msg.voice.file_id)
 
     downloaded_file = await bot.download_file(file_info.file_path,destination=file_name_full)
-    # time.sleep(2)
-    # print(downloaded_file)
-    # with open(file_name_full_converted, 'wb') as new_file:
-        # with open(file_name_full, 'rb') as file:
-            # new_file.write(file.read())
-        # new_file.write(downloaded_file)
-    # time.sleep(1)
-    print("ffmpeg -i "+file_name_full+"  "+file_name_full_converted)
-    os.system("ffmpeg -i "+file_name_full+"  "+file_name_full_converted)
-    # time.sleep(1) 
-    text=recognise(file_name_full_converted)
+    
+    text=transcript_audio(file_name_full)
     msg1=msg
     await msg.reply(text)
     os.remove(file_name_full)
-    os.remove(file_name_full_converted)
-    # a = msg.text
-    # print(f'{a=}')
-    # message.text = text
-    # a = message.text
-    # print(f'{a=}')
-
-    # print(f'{message=}')
+  
     
     msg1.__dict__['text'] = text
     pprint(msg1.__dict__)
     await message(msg1, state)  
+
 
 def split_string_in_half(s):
     # Находим середину строки
