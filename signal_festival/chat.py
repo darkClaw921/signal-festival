@@ -158,7 +158,7 @@ class GPT():
 
     response = client.audio.speech.create(
         model="tts-1",
-        voice="nova",
+        voice="onyx",
         input=text,
     )
     fileName=f"voice/{userID}.mp3"
