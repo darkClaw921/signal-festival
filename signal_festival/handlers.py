@@ -161,7 +161,7 @@ async def help_handler(msg: Message, state: FSMContext):
 @router.message(Command("startVoice"))
 async def start_voice_handler(msg: Message, state: FSMContext):
     global IS_SEND_VOICE
-    mess="[GLOBAL] Теперь для все сообщений будет генерироватся в голос"
+    mess="Вы включили режим голосового ответа на вопросы 🎙. Задайте свой вопрос и я пришлю Вам голосовое сообщение 😁"
     await msg.answer(mess)
     IS_SEND_VOICE=True
     return 0
@@ -169,7 +169,7 @@ async def start_voice_handler(msg: Message, state: FSMContext):
 @router.message(Command("stopVoice"))
 async def stop_voice_handler(msg: Message, state: FSMContext):
     global IS_SEND_VOICE
-    mess="[GLOBAL] Теперь для все сообщений будет генерироватся в текст"
+    mess="Режим голосового ответа на вопросы выключен. Мне снова придется печатать свои ответы... ⌨️"
     await msg.answer(mess)
     IS_SEND_VOICE=False
     return 0
