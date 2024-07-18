@@ -154,40 +154,16 @@ class GPT():
     #return f'{completion.choices[0].message.content}\n\n{allToken}\n{allTokenPrice}', completion["usage"]["total_tokens"], 0.002*(completion["usage"]["total_tokens"]/1000)
     return f'{answerText}', totalToken, 0.002*(totalToken/1000)
 
-  # def answer(self, system, topic: list, temp=1):
-  #       """
-  #       Формирует запрос к модели на основе предоставленных параметров и возвращает ответ, количество использованных токенов и стоимость запроса.
+  def answer_voice(self,userID:str, text:str):
 
-  #       :param system: системное сообщение для настройки модели
-  #       :param topic: список сообщений пользователя
-  #       :param temp: параметр temperature для настройки креативности модели
-  #       :return: ответ модели, количество использованных токенов, стоимость запроса
-  #       """
-  #   #      """messages = [
-  #   #   {"role": "system", "content": system},
-  #   #   {"role": "user", "content": topic}
-  #   #   ]
-  #   # """
-  #       messages = [
-  #       {"role": "system", "content": system },
-  #         #{"role": "user", "content": topic}
-  #         #{"role": "user", "content": context}
-  #         ]
-  #       messages.extend(topic)
-        
-  #       completion = client.invoke(
-  #           messages=messages,
-  #           temperature=temp
-  #       )
-
-  #       total_tokens = completion['usage']['total_tokens']
-  #       answer_text = completion['choices'][0]['message']['content']
-
-  #       all_tokens = f'{total_tokens} токенов использовано всего (вопрос-ответ).'
-  #       all_token_price = f'ЦЕНА запроса с ответом: {0.002 * (total_tokens / 1000):.6f} $'
-
-  #       return answer_text, total_tokens, 0.002 * (total_tokens / 1000)  
-
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="nova",
+        input=text,
+    )
+    fileName=f"voice/{userID}.mp3"
+    response.stream_to_file(fileName)
+    return fileName 
 
   @logger.catch
   def num_tokens_from_messages(self, messages, model="gpt-3.5-turbo-0301"):

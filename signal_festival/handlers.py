@@ -57,7 +57,7 @@ USER_EVENTS={}
 # textAllPosts=create_db()
 # create_db2()
 # model_index=gpt.load_search_indexes(textAllPosts)
-
+IS_SEND_VOICE=False
 class Form(StatesGroup):
     name = State()
     like_bots = State()
@@ -155,8 +155,23 @@ async def clear_handler(msg: Message, state: FSMContext):
 
 @router.message(Command("help"))
 async def help_handler(msg: Message, state: FSMContext):
-    mess="/start - начало работы\n/gpt - перейти в режим GPT\n/assis - перейти в режим ассистента\n/clear - очистить историю диалога"
+    mess="/start - начало работы\n/clear - очистить историю диалога\n/startVoice- начать генерировать в голос\n/stopVoice- остановить генерировать в голос\n/reset- перезагрузить модель\n"
     await msg.answer(mess)
+    return 0
+@router.message(Command("startVoice"))
+async def start_voice_handler(msg: Message, state: FSMContext):
+    global IS_SEND_VOICE
+    mess="[GLOBAL] Теперь для все сообщений будет генерироватся в голос"
+    await msg.answer(mess)
+    IS_SEND_VOICE=True
+    return 0
+
+@router.message(Command("stopVoice"))
+async def stop_voice_handler(msg: Message, state: FSMContext):
+    global IS_SEND_VOICE
+    mess="[GLOBAL] Теперь для все сообщений будет генерироватся в текст"
+    await msg.answer(mess)
+    IS_SEND_VOICE=False
     return 0
 
 @router.message(Command("reset"))
@@ -429,7 +444,22 @@ async def message(msg: Message, state: FSMContext):
     add_message_to_history(msg.chat.id, 'system', answer) 
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     dateNow = datetime.now().strftime("%d.%m.%Y")
-    await msg.answer(answer, parse_mode='Markdown')
+
+    
+    
+    if IS_SEND_VOICE:
+        answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
+        answer_voice_file_path = answer_voice_file
+        print(f'{answer_voice_file=}')
+        answer_voice_file=FSInputFile(answer_voice_file)
+        print(f'{answer_voice_file=}')
+        try:
+            await msg.answer_voice(answer_voice_file)
+        except:
+            await msg.answer(answer, parse_mode='Markdown')
+        os.remove(answer_voice_file_path)
+    else:
+        await msg.answer(answer, parse_mode='Markdown')
    
 
     # postgreWork.add_statistick(userName=userName, text=messText, 
