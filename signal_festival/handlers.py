@@ -46,10 +46,12 @@ from translation import transcript_audio
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 # PAYMENTS_TOKEN = os.getenv('PAYMENTS_TOKEN')
-
+from qvest import Quest, QuestManager
+from googleSheet import parse_google_sheet
 gpt=GPT()
 
 
+QUEST_MANAGER={}
 USER_EVENTS={}
 # ids=postgreWork.get_all_user_ids()
 # for id in ids:
@@ -58,34 +60,7 @@ USER_EVENTS={}
 # create_db2()
 # model_index=gpt.load_search_indexes(textAllPosts)
 IS_SEND_VOICE=False
-class Form(StatesGroup):
-    name = State()
-    like_bots = State()
-    language = State()
-    spam = State()
-    selectLang=State()
-    selectPhone=State()
-    selectTarif=State()
-    inputTarget=State()
-    selectTimePracktik=State()
-    sendHelp=State()
 
-    #Мероприятия
-    addEvent=State()
-    inputEvent=State()
-    inputDateEvent=State()
-    inputTimeEvent=State()
-    inputDescriptionEvent=State()
-    inputDurationEvent=State()
-
-    #Практики
-    addPracktik=State()
-    inputPracktik=State()
-    inputDatePracktik=State()
-    inputTimePracktik=State()
-    inputDescriptionPracktik=State()
-    inputDurationPracktik=State()
-    inputMediaPracktik=State()
 
 # sql = Ydb()
 
@@ -94,6 +69,18 @@ router = Router()
 bot = Bot(token=TOKEN,)
 # sheet = Sheet('profzaboru-5f6f677a3cd8.json','Афиша - Разработка бота')
 
+class Form(StatesGroup):
+    kvestQuestion = State()
+    kvestAnswer = State()
+    # like_bots = State()
+    # language = State()
+    # spam = State()
+    # selectLang=State()
+    # selectPhone=State()
+    # selectTarif=State()
+    # inputTarget=State()
+    # selectTimePracktik=State()
+    # sendHelp=State()
 
 model_index=gpt.load_search_indexes('https://docs.google.com/document/d/1i77D_xI8x-Wsq11aIw-UBXgKMUbffeXwFSj1ckZogTI/edit?usp=sharing')
 @router.message(Command("start"))
@@ -196,6 +183,21 @@ async def message(msg: CallbackQuery):
            
     return 0
 
+
+@router.message(Command("quest"))
+async def update_quest_manager(msg: Message, state: FSMContext):
+    global QUEST_MANAGER
+    await bot.send_message(msg.from_user.id, 'Подождите немонго пока я обновлю данные')
+    # quest=msg.text.replace('/quest','').strip()
+    quest=msg.text.replace('/quest','').strip()
+    pprint(quest)
+    # parsed_data = parse_google_sheet("Квест 1")
+    parsed_data = parse_google_sheet(quest)
+    QUEST_MANAGER = QuestManager(parsed_data)
+    await bot.send_message(msg.from_user.id, 'Данные обновлены')
+    return 0
+
+
 language='ru_RU'
 # r = sr.Recognizer()
 
@@ -210,6 +212,7 @@ def recognise(filename):
         except:
             print('Sorry.. run again...')
             return "Sorry.. run again..."
+
 
 
 @router.message(F.voice)
@@ -236,6 +239,53 @@ async def voice_processing(msg: Message, state: FSMContext):
     await message(msg1, state)  
 
 
+@router.message(Form.kvestQuestion)
+async def process_kvest_question(msg: Message, state: FSMContext):
+    global QUEST_MANAGER
+    userID = msg.from_user.id
+    # text = msg.text
+    # QUEST_MANAGER.is_user_finished(userID):
+    question = QUEST_MANAGER.get_user_quest(userID).get_current_question()
+    # print(f"Пользователь {userID}: {question['text']}")
+    
+    # print("Варианты ответов:")
+    # await msg.answer(question['text'])
+    text=f'{question["text"]}\n\nВарианты ответов:\n'
+    for index, option in enumerate(question['options']):
+        # print(f"{index + 1}. {option['text']} (баллы: {option['points']})")
+        text+=f"{index + 1}. {option['text']} (баллы: {option['points']})\n"
+
+    await msg.answer(text)
+    # answer = int(input("Введите номер ответа: ")) - 1
+        # QUEST_MANAGER.answer_question(userID, answer)
+
+    # await state.Form.kvestAnswer.set()
+    await state.set_state(Form.kvestAnswer)
+    return 0
+
+@router.message(Form.kvestAnswer)
+async def process_kvest_answer(msg: Message, state: FSMContext):
+    userID = msg.from_user.id
+    text = msg.text
+
+    try:
+        answer = int(text) - 1
+    except:
+        answer = 1
+
+    QUEST_MANAGER.answer_question(userID, answer)
+        
+    if not QUEST_MANAGER.is_user_finished(userID): 
+        await process_kvest_question(msg, state)
+        # await state.Form.kvestQuestion.set()
+        # await state.set_state(Form.kvestQuestion)
+
+    else:
+        await msg.answer(f"Пользователь {userID} завершил квест! Набрано {QUEST_MANAGER.get_user_score(userID)} баллов.")
+        await state.clear()
+    
+    return 0
+
 def split_string_in_half(s):
     # Находим середину строки
     mid = len(s) // 2
@@ -246,10 +296,15 @@ def split_string_in_half(s):
 #Обработка сообщений
 @router.message()
 async def message(msg: Message, state: FSMContext):
-    global USER_EVENTS
+    global USER_EVENTS, QUEST_MANAGER
     userID = msg.from_user.id
-    messText = msg.text
+    messText = msg.text.lower()
     userName = msg.from_user.username 
+    if messText == 'квест':
+        QUEST_MANAGER.start_quest(userID)
+        await state.set_state(Form.kvestQuestion)
+        await process_kvest_question(msg, state)
+        return 0
     # pprint(msg.__dict__)
     # typeModel = postgreWork.get_model(userID)
 
