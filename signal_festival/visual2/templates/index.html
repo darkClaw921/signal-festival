@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #visualizer {
+            width: 100%;
+            height: 100%;
+        }
+        #question {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="visualizer"></canvas>
+    <input type="text" id="question" placeholder="Ask a question...">
+
+    <script>
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+        const questionInput = document.getElementById('question');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let audioContext, analyser, source, dataArray;
+
+        function initAudio() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+
+            fetch('https://pouch.jumpshare.com/download/Wgn8JoLrZpd4duHkgmhGqCRtCtYROGodMHZ7B_3RSGpbZwqy5zEQIk_MwJm7eNx2xg1BOYcP2xzU8_MhaV_VRQ')
+                .then(response => response.arrayBuffer())
+                .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                .then(audioBuffer => {
+                    source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                    source.start(0);
+                    animate();
+                });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            analyser.getByteFrequencyData(dataArray);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) / 4;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                const angle = (i / dataArray.length) * Math.PI * 2;
+                const amplitude = dataArray[i] / 255;
+                const x = centerX + Math.cos(angle) * (radius + amplitude * radius);
+                const y = centerY + Math.sin(angle) * (radius + amplitude * radius);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(${i * 360 / dataArray.length}, 100%, 50%)`;
+                ctx.fill();
+
+                if (i > 0) {
+                    const prevAngle = ((i - 1) / dataArray.length) * Math.PI * 2;
+                    const prevAmplitude = dataArray[i - 1] / 255;
+                    const prevX = centerX + Math.cos(prevAngle) * (radius + prevAmplitude * radius);
+                    const prevY = centerY + Math.sin(prevAngle) * (radius + prevAmplitude * radius);
+
+                    ctx.beginPath();
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = `hsl(${i * 360 / dataArray.length}, 100%, 50%)`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        questionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (!audioContext) {
+                    initAudio();
+                }
+                questionInput.value = '';
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

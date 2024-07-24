@@ -3,12 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pdf
-*.html
+# *.html
 # C extensions
 *.so
 *.json
 *.cfg
 *~
+*.env12
 *.rdb
 etc/
 include/
