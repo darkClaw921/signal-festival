@@ -26,6 +26,9 @@ update = "^0.0.1"
 aiohttp = "^3.9.5"
 python-multipart = "^0.0.9"
 sqlalchemy = "^2.0.30"
+pydub = "^0.25.1"
+numpy = "^2.0.1"
+scipy = "^1.14.0"
 
 [build-system]
 requires = ["poetry-core"]

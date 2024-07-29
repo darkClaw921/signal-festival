@@ -1,12 +1,15 @@
 import json
 
 class Quest:
-    def __init__(self, json_file):
+    def __init__(self, json_file, endMessages:dict):
         self.json_file = json_file
         self.questions = []
         self.current_question_index = 0
         self.total_score = 0
         self.load_questions()
+        self.succsess_message = endMessages["success_message"]
+        self.failure_message = endMessages["failure_message"]
+        self.need_success_point = endMessages["need_success_point"]
 
     def load_questions(self):
         """Загрузка вопросов из JSON файла."""
@@ -37,6 +40,12 @@ class Quest:
         """Получение общего количества баллов."""
         return self.total_score
 
+    def get_end_message(self):
+        """Получение сообщения о завершении квеста."""
+        if self.total_score >= self.need_success_point:
+            return self.succsess_message
+        return self.failure_message
+
     def reset(self):
         """Сброс квеста для нового прохождения."""
         self.current_question_index = 0
@@ -44,13 +53,14 @@ class Quest:
 
 
 class QuestManager:
-    def __init__(self, json_file):
+    def __init__(self, json_file:list, endMessages:dict):
         self.json_file = json_file
         self.user_quests = {}
+        self.end_messages=endMessages
 
     def start_quest(self, user_id):
         """Начать квест для пользователя."""
-        quest = Quest(self.json_file)
+        quest = Quest(self.json_file, self.end_messages)
         self.user_quests[user_id] = quest
 
     def get_user_quest(self, user_id):
@@ -72,6 +82,11 @@ class QuestManager:
         """Получить общее количество баллов пользователя."""
         quest = self.get_user_quest(user_id)
         return quest.get_total_score() if quest else 0
+
+    def get_user_end_message(self, user_id):
+        """Получить сообщение о завершении квеста для пользователя."""
+        quest = self.get_user_quest(user_id)
+        return quest.get_end_message() if quest else "Вы не начали квест!"
 
     def reset_user_quest(self, user_id):
         """Сбросить квест пользователя для нового прохождения."""

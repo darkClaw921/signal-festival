@@ -1,7 +1,10 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from pprint import pprint
-def parse_google_sheet(sheet_name):
+def parse_google_sheet(sheet_name)->list:
+    """Парсинг данных из Google Sheets. 
+    [0]- qvest[list][dict]
+    [1]- endMessages[dict]"""
     # Настройка доступа к Google Sheets
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_name('steam-outlet-368911-cde7193347ad.json', scope)
@@ -12,10 +15,16 @@ def parse_google_sheet(sheet_name):
     
     # Получение всех данных из листа
     data = sheet.get_all_values()
-    
+    pprint(data)
     # Словарь для хранения вопросов
     questions = {}
     
+    endMessages={
+        "success_message": data[1][4].strip(),
+        "failure_message": data[1][5].strip(),
+        "need_success_point": float(data[1][6].strip()),
+    }
+
     for row in data[1:]:  # Пропускаем заголовок
         question_number = row[0]
         question_text = row[1].strip()
@@ -27,7 +36,7 @@ def parse_google_sheet(sheet_name):
                 "text": question_text,
                 "media": "planets.jpg",  # Замените на нужное имя файла
                 "options": [],
-                "correct_answer_index": None
+                "correct_answer_index": None,
             }
         
         questions[question_number]["options"].append({"text": answer_text, "points": points})
@@ -39,7 +48,7 @@ def parse_google_sheet(sheet_name):
     # Преобразуем словарь в список
     result = list(questions.values())
     
-    return result
+    return result, endMessages
 
 # Пример использования
 if __name__ == "__main__":

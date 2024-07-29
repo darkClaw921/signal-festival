@@ -90,9 +90,9 @@ async def handler_in_command(chat_id: int, command: str, messanger: str,):
         quest=command.replace('/quest','').strip()
         pprint(quest)
         # parsed_data = parse_google_sheet("Квест 1")
-        parsed_data = parse_google_sheet(quest)
+        parsed_data, endMessages = parse_google_sheet(quest)
         pprint(parsed_data)
-        QUEST_MANAGER = QuestManager(parsed_data)
+        QUEST_MANAGER = QuestManager(parsed_data,endMessages)
         await send_message(chat_id, 'Данные обновлены', messanger, IS_AUDIO=False)
 
         return 0
@@ -120,7 +120,8 @@ async def process_kvest_question(userID, messanger):
     text=f'{question["text"]}\n\nВарианты ответов:\n'
     for index, option in enumerate(question['options']):
         # print(f"{index + 1}. {option['text']} (баллы: {option['points']})")
-        text+=f"{index + 1}. {option['text']} (баллы: {option['points']})\n"
+        # text+=f"{index + 1}. {option['text']} (баллы: {option['points']})\n"
+        text+=f"{index + 1}. {option['text']} \n"
 
 
     await send_message(userID, text, messanger, IS_AUDIO=False) 
@@ -146,9 +147,9 @@ async def process_kvest_answer(userID, text,messanger):
     if not QUEST_MANAGER.is_user_finished(userID): 
         await process_kvest_question(userID=userID,messanger=messanger)
     else:
-        
+        end_message=QUEST_MANAGER.get_user_end_message(userID)
         await send_message(userID, 
-                        f"Пользователь {userID} завершил квест! Набрано {QUEST_MANAGER.get_user_score(userID)} баллов.",
+                        end_message,
                         messanger, IS_AUDIO=False)
         STATES[userID] = 'start'
     return 0
