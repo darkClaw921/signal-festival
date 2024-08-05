@@ -29,7 +29,7 @@ TOKEN_BOT = os.getenv('TOKEN_BOT')
 IP_SERVER = os.getenv('IP_SERVER')
 GENERATE_ANSWER_URL=os.getenv('GENERATE_ANSWER_URL')
 app = FastAPI(
-    title="STRANA System API",
+    title="SIGNAL System API",
     description="Send Message API\nЛоги можно посмотреть по пути /logs\nОчистить логи можно по пути /clear_logs\n",
     version="1.0"
 )
@@ -79,7 +79,7 @@ async def voice_generate(text:str, userID:int):
     
     
     url = f"http://{GENERATE_ANSWER_URL}/generate-audio"  # Замените на адрес вашего сервера A
-    
+ 
     async with aiohttp.ClientSession() as session:
         async with session.get(url,json=params) as response:
             if response.status == 200:
@@ -87,6 +87,7 @@ async def voice_generate(text:str, userID:int):
                 with open(f"voice/{userID}.mp3", 'wb') as f:
                     f.write(await response.read())
                 return f"voice/{userID}.mp3"
+            
                 # return {"message": "File downloaded successfully"}
     #     # Сохраняем файл
     # with open(f"voice/{userID}.mp3", 'wb') as f:
@@ -157,7 +158,20 @@ async def send_message(chat_id: int, text: str, messanger: str, isAudio: str):
             # data = response.json()
             # pprint(data)
             return {'message': 'Message send'}
-        
+        case 'webhook':
+            if SEND_VOISE:
+                voice_path=await voice_generate(text, chat_id)
+                # 1/0
+                # await send_audio(chat_id, voice_path)
+                # await send_message(chat_id, text, messanger)
+                url='http://'+IP_SERVER+':'+PORT+'/send_message'
+                params={'chat_id':chat_id, 'text':text, 'messanger':messanger, 'voice':voice_path}
+                await request_data(url, params)
+                return {"message": "Voice send"}
+            
+
+
+
         case 'whatsapp':
             return {"message": "Whatsapp not supported yet"}
         case 'facebook':

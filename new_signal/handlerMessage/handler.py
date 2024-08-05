@@ -30,7 +30,13 @@ async def request_data_param(url, params):
     async with aiohttp.ClientSession() as session:
         async with session.post(url=url,params=params) as response:
             return await response.text()
-
+        
+async def request_data_generate_answer(url):
+    async with aiohttp.ClientSession() as session:
+            async with session.post(url=url) as response:
+                return response
+       
+        
 async def send_message(chat_id, text, messanger, IS_AUDIO=False):
     async with aiohttp.ClientSession() as session:
         await session.post(f'http://{SENDER_MESSAGE_URL}/send_message/',
@@ -66,7 +72,8 @@ async def handler_in_command(chat_id: int, command: str, messanger: str,):
     elif command == '/reset':
         await send_message(chat_id, 'Модель перезагружается...', messanger, IS_AUDIO=False)
 
-        await aiohttp.request('POST', f'http://{GENERATE_ANSWER_URL}/update_model_index/')
+        # await aiohttp.request('POST', f'http://{GENERATE_ANSWER_URL}/update_model_index/')
+        await request_data_generate_answer(f'http://{GENERATE_ANSWER_URL}/update_model_index/')
 
         await send_message(chat_id, 'Модель перезагружена', messanger, IS_AUDIO=False)
         # IS_AUDIO=False

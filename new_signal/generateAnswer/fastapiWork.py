@@ -96,10 +96,15 @@ async def generate_answer(data: Generate):
                                                  temp=temp, verbose=0)
     return {"answer": answer, 'isAudio': isAudio, 'token': token, 'price': price, 'docs': docs}
 
+
+
+
 @app.post("/update_model_index/")
 def update_model_index():
     update_or_create_model_index()
     return {"message": "Модель обновлена!"}
+
+
 
 # from fastapi.responses import FileResponse
 # @app.get("/generate-audio/{text}/{userID}")

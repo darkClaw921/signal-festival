@@ -29,11 +29,9 @@ from langchain_community.chat_models import ChatYandexGPT
 import tiktoken
 key = os.environ.get('OPENAI_API_KEY')
 # YC_IAM_TOKEN = os.environ.get('YC_IAM_TOKEN')
-client = OpenAI(api_key=key,)
+client = OpenAI(api_key=key)
 
 # chat_model = ChatYandexGPT(folder_id='b1g83bovl5hjt7cl583v', model_uri='gpt://b1g83bovl5hjt7cl583v/yandexgpt')       
-
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
