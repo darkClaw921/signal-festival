@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException,Form,Depends,Response
+from fastapi import FastAPI, HTTPException,Form,Depends,Response, File, UploadFile
 import requests
 from pprint import pprint
 import os
@@ -19,6 +19,8 @@ from chat import GPT
 from helper import prepare_table_for_text
 from fastapi.responses import FileResponse
 from pathlib import Path
+from translation import transcript_audio
+
 
 gpt=GPT()
 app = FastAPI(debug=False)
@@ -106,9 +108,33 @@ def update_model_index():
 
 
 
-# @app.get("/regonaiz-audio/")
-# async def 
+# @app.get("/recognition-audio/")
+# async def recognition_audio():
+    
+    
+#     fileName='voice/{}.mp3'
+#     transcript_audio()
+@app.post("/recognition-audio/")
+async def upload_audio(file: UploadFile = File(...)):
+    # Проверяем, что файл имеет расширение mp3
+    pprint(file.content_type)
+    pprint(file.__dict__)
+    if file.filename.split('.')[1] != 'mp3':
+        return {"error": "File type not supported. Please upload an MP3 file."}
 
+    # Сохраняем файл в папку voice/
+    file_location = f"voice/{file.filename}"
+    with open(file_location, "wb") as audio_file:
+        audio_file.write(await file.read())
+
+    return FileResponse(
+        path=file_location,
+        media_type="audio/mpeg",
+        filename=file.filename
+    )
+
+
+    # return {"info": f"File '{file.filename}' saved at '{file_location}'"}
 
 
 # from fastapi.responses import FileResponse

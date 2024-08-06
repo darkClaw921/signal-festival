@@ -26,7 +26,7 @@ from aiogram.types import ChatMemberUpdated
 from dotenv import load_dotenv
 import os
 
-import postgreWork 
+# import postgreWork 
 
 from loguru import logger
 
@@ -93,12 +93,14 @@ async def voice_processing(msg: Message, state: FSMContext):
     await message(msg1, state) 
 
 @router.message(Command('sendvoice'))
-async def send_welcome(message: types.Message):
-    keyboard = types.InlineKeyboardMarkup()
-    button = types.InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
-    keyboard.add(button)
+async def send_welcome(message: Message):
+    builder = InlineKeyboardBuilder()
+    builder.button(text='Перейти на гоолосовой ввод', url='http://signal.ai-akedemi-project.ru:5008')
+    # keyboard = InlineKeyboardMarkup()
+    # button = InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
+    # keyboard.add(button)
     
-    await message.answer("Добро пожаловать! Нажмите на кнопку ниже, чтобы спрашивать голосом ", reply_markup=keyboard)
+    await message.answer("Добро пожаловать! Нажмите на кнопку ниже, чтобы спрашивать голосом ", reply_markup=builder.as_markup())
 
 
 #Обработка сообщений
