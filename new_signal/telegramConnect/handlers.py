@@ -3,7 +3,7 @@ from aiogram import types, F, Router, html, Bot
 from aiogram.types import (Message, CallbackQuery,
                            InputFile, FSInputFile,
                             MessageEntity, InputMediaDocument,
-                            InputMediaPhoto, InputMediaVideo, Document)
+                            InputMediaPhoto, InputMediaVideo, Document, WebAppInfo)
 from aiogram.filters import Command, StateFilter,ChatMemberUpdatedFilter
 from aiogram.types.message import ContentType
 from pprint import pprint
@@ -95,7 +95,8 @@ async def voice_processing(msg: Message, state: FSMContext):
 @router.message(Command('sendvoice'))
 async def send_welcome(message: Message):
     builder = InlineKeyboardBuilder()
-    builder.button(text='Перейти на гоолосовой ввод', url='http://signal.ai-akedemi-project.ru:5008')
+    # builder.button(text='Перейти на гоолосовой ввод', url='http://signal.ai-akedemi-project.ru:5008')
+    builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url='http://signal.ai-akedemi-project.ru:5008'))
     # keyboard = InlineKeyboardMarkup()
     # button = InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
     # keyboard.add(button)

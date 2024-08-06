@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException,Form,Depends
+from fastapi import FastAPI, HTTPException,Form,Depends,File, UploadFile
 import requests
 from pprint import pprint
 import os
@@ -15,6 +15,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel,Field
 from datetime import datetime
 from pprint import pformat, pprint
+from fastapi.middleware.cors import CORSMiddleware
 # from fastapi import FastAPI, 
 # TOKEN_BOT = os.getenv('TOKEN_BOT_EVENT')
 from handler import handler_in_message,handler_in_command
@@ -58,7 +59,24 @@ async def handler_message(message: Message):
     return {'message': 'Message'}
 # async def handler_message(chat_id: int, text: str, messanger: str):
 
+@app.post("/recognition-audio/")
+async def upload_audio(file: UploadFile = File(...)):
+    # Проверяем, что файл имеет расширение mp3
+    pprint(file.content_type)
+    pprint(file.__dict__)
+    if file.filename.split('.')[1] != 'mp3':
+        return {"error": "File type not supported. Please upload an MP3 file."}
 
+    # Сохраняем файл в папку voice/
+    file_location = f"voice/{file.filename}"
+    with open(file_location, "wb") as audio_file:
+        audio_file.write(await file.read())
+
+    return FileResponse(
+        path=file_location,
+        media_type="audio/mpeg",
+        filename=file.filename
+    )
 
 
 #работа с логами

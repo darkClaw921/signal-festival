@@ -1,39 +1,18 @@
 version: "3.9"
 services:
-  traefik:
-    image: traefik:v2.10
-    command:
-      - "--api.insecure=true"  # Включить интерфейс API Traefik (не рекомендуется для продакшена)
-      - "--providers.docker=true"  # Включить поддержку Docker
-      - "--entrypoints.web.address=:80"  # HTTP
-      - "--entrypoints.websecure.address=:443"  # HTTPS
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"  # Использовать HTTP Challenge для получения сертификатов
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"  # Указать entrypoint для HTTP Challenge
-      - "--certificatesresolvers.myresolver.acme.email=your-email@example.com"  # Укажите ваш email для Let's Encrypt
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  # Путь для хранения сертификатов
-    ports:
-      - "80:80"  # HTTP
-      - "443:443"  # HTTPS
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"  # Доступ к Docker
-      - "./letsencrypt:/letsencrypt"  # Путь для хранения сертификатов
-    restart: unless-stopped
-
   portainer:
     image: portainer/portainer-ce
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.tls.certresolver=myresolver"
+    ports:
+      - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     restart: unless-stopped
-
+      
   postgres:
     container_name: postgres
     image: postgres:latest
+    
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -56,40 +35,62 @@ services:
         limits:
           cpus: '1'
           memory: 4G
-
   pgadmin:
     container_name: pgadmin_container
     image: dpage/pgadmin4:latest
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.pgadmin.entrypoints=websecure"
-      - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL} 
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
       - ../pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
     restart: unless-stopped
     deploy:
       resources:
         limits:
           cpus: '0.5'
           memory: 1G
+    
+
+  postgres_exporter:
+    container_name: exporter_container
+    image: prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/habrdb?sslmode=disable"
+      DATA_SOURCE_USER: ${DATA_SOURCE_USER}
+      DATA_SOURCE_PASS: ${DATA_SOURCE_PASS}
+      PG_EXPORTER_EXTEND_QUERY_PATH: "/etc/postgres_exporter/queries.yaml"
+    volumes:
+      - ./queries.yaml:/etc/postgres_exporter/queries.yaml:ro
+    ports:
+      - "9187:9187"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 500M
+   
+  
+   #для личных с папкой
+  
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
 
   telegram_connect:
     image: telegram_connect
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.telegram_connect.rule=Host(`telegram.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.telegram_connect.entrypoints=websecure"
-      - "traefik.http.routers.telegram_connect.tls.certresolver=myresolver"
     volumes:
       - ./new_signal/telegramConnect:/app
+      # - ./pyproject.toml:/app/pyproject.toml
     restart: unless-stopped
-    build:
-      context: ./new_signal/telegramConnect
+    ports:
+      - "${PORT_TELEGRAM_CONNECT}:${PORT_TELEGRAM_CONNECT}"
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -99,41 +100,45 @@ services:
       - TOKEN_BOT=${TOKEN_BOT}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - HANDLER_MESSAGE_URL=${HANDLER_MESSAGE_URL}:${PORT_HANDLER_MESSAGE}
+    
+    build:
+      context: ./new_signal/telegramConnect
+    
     depends_on:
       - postgres
 
+  
   handler_message:
     image: handler_message
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.handler_message.rule=Host(`handler.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.handler_message.entrypoints=websecure"
-      - "traefik.http.routers.handler_message.tls.certresolver=myresolver"
     volumes:
       - ./new_signal/handlerMessage:/app
+      # - ./pyproject.toml:/app/pyproject.toml
     restart: unless-stopped
+    ports:
+      - "${PORT_HANDLER_MESSAGE}:${PORT_HANDLER_MESSAGE}"
     build:
       context: ./new_signal/handlerMessage
     environment:
       - REDIS_URL=${REDIS_URL}
+      
+      # - POSTGRES_URL=${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_URL}:5432/${POSTGRES_DB}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_URL=${POSTGRES_URL}
       - SENDER_MESSAGE_URL=${SENDER_MESSAGE_URL}:${PORT_SENDER_MESSAGE}
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
-      - PORT_HANDLER_MESSAGE=${PORT_HANDLER_MESSAGE}
+      - PORT_HANDLER_MESSAGE=${PORT_HANDLER_MESSAGE}  
+
 
   generate_answer:
     image: generate_answer
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.generate_answer.rule=Host(`generate.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.generate_answer.entrypoints=websecure"
-      - "traefik.http.routers.generate_answer.tls.certresolver=myresolver"
     volumes:
       - ./new_signal/generateAnswer:/app
+      # - ./pyproject.toml:/app/pyproject.toml
     restart: unless-stopped
+    ports:
+      - "${PORT_GENERATE_ANSWER}:${PORT_GENERATE_ANSWER}"
     build:
       context: ./new_signal/generateAnswer
     environment:
@@ -141,37 +146,38 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_URL=${POSTGRES_URL}
+
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - VECTOR_DB_WORK_URL=${VECTOR_DB_WORK_URL}:${PORT_VECTOR_DB_WORK}
       - PORT_GENERATE_ANSWER=${PORT_GENERATE_ANSWER}
 
+
   sender_message:
     image: sender_message
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sender_message.rule=Host(`sender.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.sender_message.entrypoints=websecure"
-      - "traefik.http.routers.sender_message.tls.certresolver=myresolver"
     volumes:
       - ./new_signal/senderMessage:/app
+      # - ./pyproject.toml:/app/pyproject.toml
     restart: unless-stopped
+    ports:
+      - "${PORT_SENDER_MESSAGE}:${PORT_SENDER_MESSAGE}"
     build:
       context: ./new_signal/senderMessage
     environment:
-      - TOKEN_BOT=${TOKEN_BOT}  # telegram
+      - TOKEN_BOT=${TOKEN_BOT} #telegram
+      # - INSTA_USER=${INSTA_USER}
+      # - INSTA_PASSWORD=${INSTA_PASSWORD}
       - PORT_SENDER_MESSAGE=${PORT_SENDER_MESSAGE}
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
+      # - PORT_GENERATE_ANSWER=${PORT_GENERATE_ANSWER}
 
   vector_db_work:
     image: vector_db_work
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.vector_db_work.rule=Host(`vector.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.routers.vector_db_work.entrypoints=websecure"
-      - "traefik.http.routers.vector_db_work.tls.certresolver=myresolver"
     volumes:
       - ./new_signal/vectorDBwork:/app
+      # - ./pyproject.toml:/app/pyproject.toml
     restart: unless-stopped
+    ports:
+      - "${PORT_VECTOR_DB_WORK}:${PORT_VECTOR_DB_WORK}"
     build:
       context: ./new_signal/vectorDBwork
     environment:
@@ -180,12 +186,19 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_URL=${POSTGRES_URL}
       - PORT_VECTOR_DB_WORK=${PORT_VECTOR_DB_WORK}
-
   bash:
     image: bash
     restart: unless-stopped
     tty: true
-
 volumes:
   habrdb-data:
+  # pgadmin-data:
   portainer_data:
+#   redis-data:
+#     driver: local
+
+
+
+# networks:
+#   postgres:
+#     driver: bridge
