@@ -92,7 +92,13 @@ async def voice_processing(msg: Message, state: FSMContext):
     pprint(msg1.__dict__)
     await message(msg1, state) 
 
-
+@router.message(commands=['sendvoice'])
+async def send_welcome(message: types.Message):
+    keyboard = types.InlineKeyboardMarkup()
+    button = types.InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
+    keyboard.add(button)
+    
+    await message.answer("Добро пожаловать! Нажмите на кнопку ниже, чтобы спрашивать голосом ", reply_markup=keyboard)
 
 
 #Обработка сообщений

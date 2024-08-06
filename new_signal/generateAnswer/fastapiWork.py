@@ -106,6 +106,11 @@ def update_model_index():
 
 
 
+# @app.get("/regonaiz-audio/")
+# async def 
+
+
+
 # from fastapi.responses import FileResponse
 # @app.get("/generate-audio/{text}/{userID}")
 @app.get("/generate-audio/")
