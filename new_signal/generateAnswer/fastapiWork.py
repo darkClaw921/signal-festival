@@ -20,7 +20,7 @@ from helper import prepare_table_for_text
 from fastapi.responses import FileResponse
 from pathlib import Path
 from translation import transcript_audio
-
+from fastapi.middleware.cors import CORSMiddleware
 
 gpt=GPT()
 app = FastAPI(debug=False)
@@ -45,6 +45,22 @@ logs = []
 MODELS_INDEX={
     'model_1': 'gpt2',
 }
+# Настройка CORS
+origins = [
+    "http://localhost:5173",  # Разрешите доступ с вашего фронтенда
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешите все методы
+    allow_headers=["*"],  # Разрешите все заголовки
+)
+
+# Убедитесь, что папка voice существует
+os.makedirs("voice", exist_ok=True)
+
 
 def update_or_create_model_index():
     global MODELS_INDEX
