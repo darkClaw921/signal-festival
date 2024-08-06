@@ -1,49 +1,24 @@
 version: "3.9"
 services:
   traefik:
-    image: traefik:v2.9
+    image: traefik:v2.10
     command:
-      - '--entrypoints.web.address=:80'
-#      - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
-      - '--entrypoints.websecure.address=:443'
-      - '--entrypoints.websecure.http.tls=true'
-      - '--entrypoints.websecure.http.tls.certresolver=le'
-      - '--providers.docker'
-      - '--providers.docker.exposedByDefault=true'
-      - '--api'
-        # - '--certificatesresolvers.le.acme.email=admin@mail.${DOMAIN}'
-        #- '--certificatesresolvers.le.acme.storage=/acme/acme.json'
-
-        #- "--certificatesresolvers.le.acme.dnschallenge=true"
-        #- "--certificatesresolvers.le.acme.dnschallenge.provider=ovh"
-
-      - "--certificatesresolvers.le.acme.httpchallenge=true"
-      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-
-
-        #- '--certificatesresolvers.le.acme.tlschallenge=true'
+      - "--api.insecure=true"  # Включить интерфейс API Traefik (не рекомендуется для продакшена)
+      - "--providers.docker=true"  # Включить поддержку Docker
+      - "--entrypoints.web.address=:80"  # HTTP
+      - "--entrypoints.websecure.address=:443"  # HTTPS
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"  # Использовать HTTP Challenge для получения сертификатов
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"  # Указать entrypoint для HTTP Challenge
+      # - "--certificatesresolvers.myresolver.acme.email=your-email@example.com"  # Укажите ваш email для Let's Encrypt
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"  # Путь для хранения сертификатов
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"  # HTTP
+      - "443:443"  # HTTPS
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/acme:/acme
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
-      - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.entrypoints=web,websecure
+      - "/var/run/docker.sock:/var/run/docker.sock"  # Доступ к Docker
+      - "./letsencrypt:/letsencrypt"  # Путь для хранения сертификатов
+    restart: unless-stopped
 
-      # Enable CORS headers
-      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-      
   portainer:
     image: portainer/portainer-ce
     labels:
@@ -161,7 +136,7 @@ services:
       - PORT_HANDLER_MESSAGE=${PORT_HANDLER_MESSAGE}
     ports:
       - ${PORT_HANDLER_MESSAGE}:${PORT_HANDLER_MESSAGE}
-
+      
   generate_answer:
     image: generate_answer
     labels:
