@@ -26,6 +26,7 @@ services:
       - "traefik.http.routers.portainer.rule=Host(`portainer.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=myresolver"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -65,6 +66,8 @@ services:
       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
+      - "traefik.http.services.pgadmin.loadbalancer.server.port=5050" 
+
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL} 
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -85,6 +88,7 @@ services:
       - "traefik.http.routers.telegram_connect.rule=Host(`telegram.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.telegram_connect.entrypoints=websecure"
       - "traefik.http.routers.telegram_connect.tls.certresolver=myresolver"
+      - "traefik.http.services.telegram_connect.loadbalancer.server.port=${PORT_TELEGRAM_CONNECT}"
     volumes:
       - ./new_signal/telegramConnect:/app
     restart: unless-stopped
