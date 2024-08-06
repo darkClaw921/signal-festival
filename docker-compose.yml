@@ -113,6 +113,7 @@ services:
       - "traefik.http.routers.handler_message.rule=Host(`handler.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.handler_message.entrypoints=websecure"
       - "traefik.http.routers.handler_message.tls.certresolver=myresolver"
+      - "traefik.http.services.handler_message.loadbalancer.server.port=${PORT_HANDLER_MESSAGE}"
     volumes:
       - ./new_signal/handlerMessage:/app
     restart: unless-stopped
@@ -135,6 +136,7 @@ services:
       - "traefik.http.routers.generate_answer.rule=Host(`generate.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.generate_answer.entrypoints=websecure"
       - "traefik.http.routers.generate_answer.tls.certresolver=myresolver"
+      - "traefik.http.services.generate_answer.loadbalancer.server.port=${PORT_GENERATE_ANSWER}"
     volumes:
       - ./new_signal/generateAnswer:/app
     restart: unless-stopped
@@ -156,6 +158,7 @@ services:
       - "traefik.http.routers.sender_message.rule=Host(`sender.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.sender_message.entrypoints=websecure"
       - "traefik.http.routers.sender_message.tls.certresolver=myresolver"
+      - "traefik.http.services.sender_message.loadbalancer.server.port=${PORT_SENDER_MESSAGE}"
     volumes:
       - ./new_signal/senderMessage:/app
     restart: unless-stopped
@@ -173,6 +176,7 @@ services:
       - "traefik.http.routers.vector_db_work.rule=Host(`vector.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.vector_db_work.entrypoints=websecure"
       - "traefik.http.routers.vector_db_work.tls.certresolver=myresolver"
+      - "traefik.http.services.vector_db_work.loadbalancer.server.port=${PORT_VECTOR_DB_WORK}"
     volumes:
       - ./new_signal/vectorDBwork:/app
     restart: unless-stopped
