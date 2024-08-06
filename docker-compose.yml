@@ -23,7 +23,7 @@ services:
     image: portainer/portainer-ce
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.portainer.rule=Host(`portainer.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=myresolver"
     volumes:
@@ -62,7 +62,7 @@ services:
     image: dpage/pgadmin4:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.pgadmin.entrypoints=websecure"
       - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
     environment:
@@ -82,7 +82,7 @@ services:
     image: telegram_connect
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.telegram_connect.rule=Host(`telegram.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.telegram_connect.rule=Host(`telegram.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.telegram_connect.entrypoints=websecure"
       - "traefik.http.routers.telegram_connect.tls.certresolver=myresolver"
     volumes:
@@ -106,7 +106,7 @@ services:
     image: handler_message
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.handler_message.rule=Host(`handler.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.handler_message.rule=Host(`handler.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.handler_message.entrypoints=websecure"
       - "traefik.http.routers.handler_message.tls.certresolver=myresolver"
     volumes:
@@ -128,7 +128,7 @@ services:
     image: generate_answer
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.generate_answer.rule=Host(`generate.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.generate_answer.rule=Host(`generate.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.generate_answer.entrypoints=websecure"
       - "traefik.http.routers.generate_answer.tls.certresolver=myresolver"
     volumes:
@@ -149,7 +149,7 @@ services:
     image: sender_message
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sender_message.rule=Host(`sender.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.sender_message.rule=Host(`sender.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.sender_message.entrypoints=websecure"
       - "traefik.http.routers.sender_message.tls.certresolver=myresolver"
     volumes:
@@ -166,7 +166,7 @@ services:
     image: vector_db_work
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vector_db_work.rule=Host(`vector.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.vector_db_work.rule=Host(`vector.signal.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.routers.vector_db_work.entrypoints=websecure"
       - "traefik.http.routers.vector_db_work.tls.certresolver=myresolver"
     volumes:
