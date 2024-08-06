@@ -30,7 +30,7 @@ services:
       - ./traefik/acme:/acme
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
+      - traefik.http.routers.traefik.rule=Host(`traefik.ai-akedemi-project.ru`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.entrypoints=web,websecure
 
@@ -38,12 +38,8 @@ services:
       - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
       - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
       - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-      
+
+
   portainer:
     image: portainer/portainer-ce
     labels:
@@ -110,6 +106,7 @@ services:
           memory: 1G
     ports:
       - 5050:80
+      
   telegram_connect:
     image: telegram_connect
     labels:
@@ -206,6 +203,7 @@ services:
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
     ports:
       - ${PORT_SENDER_MESSAGE}:${PORT_SENDER_MESSAGE}
+  
   vector_db_work:
     image: vector_db_work
     labels:
@@ -227,10 +225,10 @@ services:
       - PORT_VECTOR_DB_WORK=${PORT_VECTOR_DB_WORK}
     ports:
       - ${PORT_VECTOR_DB_WORK}:${PORT_VECTOR_DB_WORK}
-  bash:
-    image: bash
-    restart: unless-stopped
-    tty: true
+  # bash:
+  #   image: bash
+  #   restart: unless-stopped
+  #   tty: true
 
 volumes:
   habrdb-data:
