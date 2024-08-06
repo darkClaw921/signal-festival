@@ -31,6 +31,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
     restart: unless-stopped
+    ports:
+      - 9000:9000
 
   postgres:
     container_name: postgres
@@ -44,7 +46,7 @@ services:
       - ../DatabasePOSTGRE:/docker-entrypoint-initdb.d
       - habrdb-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - 5432:5432
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -57,6 +59,7 @@ services:
         limits:
           cpus: '1'
           memory: 4G
+
 
   pgadmin:
     container_name: pgadmin_container
@@ -80,7 +83,8 @@ services:
         limits:
           cpus: '0.5'
           memory: 1G
-
+    ports:
+      - 5050:80
   telegram_connect:
     image: telegram_connect
     labels:
@@ -105,6 +109,8 @@ services:
       - HANDLER_MESSAGE_URL=${HANDLER_MESSAGE_URL}:${PORT_HANDLER_MESSAGE}
     depends_on:
       - postgres
+    ports:
+      - ${PORT_TELEGRAM_CONNECT}:${PORT_TELEGRAM_CONNECT}
 
   handler_message:
     image: handler_message
@@ -128,7 +134,8 @@ services:
       - SENDER_MESSAGE_URL=${SENDER_MESSAGE_URL}:${PORT_SENDER_MESSAGE}
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
       - PORT_HANDLER_MESSAGE=${PORT_HANDLER_MESSAGE}
-
+    ports:
+      - ${PORT_HANDLER_MESSAGE}:${PORT_HANDLER_MESSAGE}
   generate_answer:
     image: generate_answer
     labels:
@@ -150,6 +157,9 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - VECTOR_DB_WORK_URL=${VECTOR_DB_WORK_URL}:${PORT_VECTOR_DB_WORK}
       - PORT_GENERATE_ANSWER=${PORT_GENERATE_ANSWER}
+    ports:
+      - ${PORT_GENERATE_ANSWER}:${PORT_GENERATE_ANSWER}
+
 
   sender_message:
     image: sender_message
@@ -168,7 +178,8 @@ services:
       - TOKEN_BOT=${TOKEN_BOT}  # telegram
       - PORT_SENDER_MESSAGE=${PORT_SENDER_MESSAGE}
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
-
+    ports:
+      - ${PORT_SENDER_MESSAGE}:${PORT_SENDER_MESSAGE}
   vector_db_work:
     image: vector_db_work
     labels:
@@ -188,7 +199,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_URL=${POSTGRES_URL}
       - PORT_VECTOR_DB_WORK=${PORT_VECTOR_DB_WORK}
-
+    ports:
+      - ${PORT_VECTOR_DB_WORK}:${PORT_VECTOR_DB_WORK}
   bash:
     image: bash
     restart: unless-stopped
