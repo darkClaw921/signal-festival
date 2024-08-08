@@ -247,7 +247,7 @@ services:
     image: vizualize_audio
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize_audio.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize-audio.ai-akedemi-project.ru`)"  # Замените на ваш домен
       - "traefik.http.services.vizualize_audio.loadbalancer.server.port=${PORT_VIZUALIZE_AUDIO}"
     volumes:
       - ../stepinus.github.io:/app

@@ -4,7 +4,7 @@ import numpy as np
 
 # Функция для изменения высоты тона
 def change_pitch(sound, semitones):
-    new_sample_rate = int(sound.frame_rate * (3 ** (semitones / 12.0)))
+    new_sample_rate = int(sound.frame_rate * (2 ** (semitones / 12.0)))
     pitched_sound = sound._spawn(sound.raw_data, overrides={'frame_rate': new_sample_rate})
     return pitched_sound.set_frame_rate(sound.frame_rate)
 
@@ -27,22 +27,32 @@ def add_reverb(sound, decay=0.5):
     
     return reverb_sound[:len(sound)]  # Обрезаем до оригинальной длины
 
-# Функция для добавления эффекта "робота"
-def add_robot_effect(sound, modulation_frequency=5):
-    samples = np.array(sound.get_array_of_samples())
-    t = np.arange(len(samples)) / sound.frame_rate
-    modulation = 0.05 * (1 + np.sin(2 * np.pi * modulation_frequency * t))  # Синусоидальная модуляция
-    robot_samples = samples * modulation
-    robot_audio = AudioSegment(
-        robot_samples.astype(np.int16).tobytes(),
+# Функция для добавления эха
+# def add_echo(sound, delay=300, decay=0.03):
+def add_echo(sound, delay=100, decay=0.03):
+    echo_sound = sound
+    delay_samples = int(delay * sound.frame_rate / 1000)  # Преобразуем задержку в сэмплы
+    
+    # Создаем массив для эха
+    echo_samples = np.zeros(len(sound.get_array_of_samples()) + delay_samples)
+    
+    # Добавляем оригинальный звук
+    echo_samples[:len(sound.get_array_of_samples())] += np.array(sound.get_array_of_samples())
+    
+    # Добавляем эхо
+    echo_samples[delay_samples:delay_samples + len(sound.get_array_of_samples())] += np.array(sound.get_array_of_samples()) * decay
+    
+    echo_audio = AudioSegment(
+        echo_samples.astype(np.int16).tobytes(),
         frame_rate=sound.frame_rate,
         sample_width=sound.sample_width,
         channels=sound.channels
     )
-    return robot_audio
+    
+    return echo_audio[:len(sound) + delay_samples]  # Обрезаем до нужной длины
 
 # Функция для сглаживания звука
-def smooth_sound(sound, gain=0.9):
+def smooth_sound(sound, gain=0.8):
     samples = np.array(sound.get_array_of_samples())
     smoothed_samples = np.clip(samples * gain, -32768, 32767)  # Ограничиваем значения
     smoothed_audio = AudioSegment(
@@ -56,25 +66,20 @@ def smooth_sound(sound, gain=0.9):
 # Загрузка аудиофайла
 audio = AudioSegment.from_file("audio.mp3")
 
-# Изменение высоты тона (увеличиваем на 2 полутонов для более приятного голоса)
-pitched_audio = change_pitch(audio, semitones=2.5)
-
-# Добавление эффекта "робота"
-# robot_audio = add_robot_effect(pitched_audio, modulation_frequency=1)
+# Изменение высоты тона (увеличиваем на 3 полутонов для более мягкого голоса)
+pitched_audio = change_pitch(audio, semitones=3)
 
 # Добавление реверберации
-# reverb_audio = add_reverb(robot_audio, decay=0.1)
-reverb_audio = add_reverb(pitched_audio, decay=0.1)
+reverb_audio = add_reverb(pitched_audio, decay=0.6)
+
+# Добавление эха
+alien_voice_with_echo = add_echo(reverb_audio, delay=300, decay=0.3)
 
 # Сглаживание звука
-# final_audio = smooth_sound(reverb_audio, gain=0.95)
-final_audio = smooth_sound(reverb_audio, gain=0.35)
-
-# Повышение громкости в 2 раза (6 дБ)
-final_audio = final_audio + 12 # Или final_audio.apply_gain(6)
+final_audio = smooth_sound(alien_voice_with_echo, gain=0.9)
 
 # Сохранение результата
-final_audio.export("friendly_orator_voice_louder.mp3", format="mp3")
+final_audio.export("angelic_alien_voice.mp3", format="mp3")
 
 # Воспроизведение результата (опционально)
 play(final_audio)

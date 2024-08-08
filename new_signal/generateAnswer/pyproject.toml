@@ -29,6 +29,7 @@ psycopg2-binary = "^2.9.9"
 update = "^0.0.1"
 aiohttp = "^3.9.5"
 python-multipart = "^0.0.9"
+elevenlabs = "^1.6.1"
 
 [build-system]
 requires = ["poetry-core"]

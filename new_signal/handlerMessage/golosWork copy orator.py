@@ -57,24 +57,22 @@ def smooth_sound(sound, gain=0.9):
 audio = AudioSegment.from_file("audio.mp3")
 
 # Изменение высоты тона (увеличиваем на 2 полутонов для более приятного голоса)
-pitched_audio = change_pitch(audio, semitones=2.5)
+pitched_audio = change_pitch(audio, semitones=2)
 
 # Добавление эффекта "робота"
-# robot_audio = add_robot_effect(pitched_audio, modulation_frequency=1)
+robot_audio = add_robot_effect(pitched_audio, modulation_frequency=3)
 
 # Добавление реверберации
-# reverb_audio = add_reverb(robot_audio, decay=0.1)
-reverb_audio = add_reverb(pitched_audio, decay=0.1)
+reverb_audio = add_reverb(robot_audio, decay=0.4)
 
 # Сглаживание звука
-# final_audio = smooth_sound(reverb_audio, gain=0.95)
-final_audio = smooth_sound(reverb_audio, gain=0.35)
+final_audio = smooth_sound(reverb_audio, gain=0.95)
 
 # Повышение громкости в 2 раза (6 дБ)
-final_audio = final_audio + 12 # Или final_audio.apply_gain(6)
+final_audio = final_audio + 6  # Или final_audio.apply_gain(6)
 
 # Сохранение результата
 final_audio.export("friendly_orator_voice_louder.mp3", format="mp3")
 
 # Воспроизведение результата (опционально)
-play(final_audio)
+# play(final_audio)
