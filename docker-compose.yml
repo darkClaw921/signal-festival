@@ -260,7 +260,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize-audio.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.services.vizualize_audio.loadbalancer.server.port=${PORT_VIZUALIZE_AUDIO}"
+      # - "traefik.http.services.vizualize_audio.loadbalancer.server.port=${PORT_VIZUALIZE_AUDIO}"
+      - "traefik.http.services.vizualize_audio.loadbalancer.server.port=80"
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ../stepinus.github.io:/app
     restart: unless-stopped
@@ -273,8 +276,10 @@ services:
       # - POSTGRES_URL=${POSTGRES_URL}
       # - PORT_VECTOR_DB_WORK=${PORT_VECTOR_DB_WORK}
       - GENERATE_ANSWER_URL=${GENERATE_ANSWER_URL}:${PORT_GENERATE_ANSWER}
-    ports:
-      - ${PORT_VIZUALIZE_AUDIO}:${PORT_VIZUALIZE_AUDIO}
+    # ports:
+    #   - ${PORT_VIZUALIZE_AUDIO}:${PORT_VIZUALIZE_AUDIO}
+    expose:
+      - "80" # Указывает, что контейнер слушает на порту 80
   # bash:
   #   image: bash
   #   restart: unless-stopped
