@@ -36,8 +36,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      # - "traefik.http.routers.portainer.entrypoints=websecure"
-      # - "traefik.http.routers.portainer.tls.certresolver=myresolver"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -52,6 +50,11 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`redis.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.portainer.loadbalancer.server.port=6379"  
+
   postgres_exporter:
 
     container_name: exporter_container
@@ -71,6 +74,10 @@ services:
         limits:
           cpus: '0.2'
           memory: 500M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`postgres-exporter.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.portainer.loadbalancer.server.port=6379"  
 
   postgres:
     container_name: postgres
@@ -97,6 +104,10 @@ services:
         limits:
           cpus: '1'
           memory: 4G
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`postgres.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.portainer.loadbalancer.server.port=5432"  
 
 
   pgadmin:
