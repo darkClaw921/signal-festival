@@ -77,7 +77,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`postgres-exporter.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.services.portainer.loadbalancer.server.port=6379"  
+      - "traefik.http.services.portainer.loadbalancer.server.port=9187"  
 
   postgres:
     container_name: postgres
