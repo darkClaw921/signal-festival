@@ -53,8 +53,8 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`redis.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.services.portainer.loadbalancer.server.port=6379"  
+      - "traefik.http.routers.redis.rule=Host(`redis.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.redis.loadbalancer.server.port=6379"  
 
   postgres_exporter:
 
@@ -77,8 +77,8 @@ services:
           memory: 500M
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`postgres-exporter.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.services.portainer.loadbalancer.server.port=9187"  
+      - "traefik.http.routers.postgres_exporter.rule=Host(`postgres-exporter.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.postgres_exporter.loadbalancer.server.port=9187"  
 
   postgres:
     container_name: postgres
@@ -107,8 +107,8 @@ services:
           memory: 4G
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`postgres.ai-akedemi-project.ru`)"  # Замените на ваш домен
-      - "traefik.http.services.portainer.loadbalancer.server.port=5432"  
+      - "traefik.http.routers.postgres.rule=Host(`postgres.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.services.postgres.loadbalancer.server.port=5432"  
 
 
   pgadmin:
