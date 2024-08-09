@@ -232,3 +232,4 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     dateNow = datetime.now().strftime("%d.%m.%Y")
     # await msg.answer(answer, parse_mode='Markdown')
+    return answer

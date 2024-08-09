@@ -21,6 +21,9 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from translation import transcript_audio
 from fastapi.middleware.cors import CORSMiddleware
+import aiohttp
+
+
 
 gpt=GPT()
 app = FastAPI(debug=False)
@@ -28,6 +31,7 @@ load_dotenv()
 PORT = os.getenv('PORT_GENERATE_ANSWER')
 HOST = os.getenv('HOST')
 IP_SERVER = os.getenv('IP_SERVER')
+HANDLER_MESSAGE_URL = os.getenv('HANDLER_MESSAGE_URL')
 
 app = FastAPI(
     title="Signal System API",
@@ -61,6 +65,10 @@ app.add_middleware(
 # Убедитесь, что папка voice существует
 os.makedirs("voice", exist_ok=True)
 
+async def request_data(url, params):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url=url,json=params) as response:
+            return await response.text()
 
 def update_or_create_model_index():
     global MODELS_INDEX
@@ -131,22 +139,42 @@ def update_model_index():
 #     fileName='voice/{}.mp3'
 #     transcript_audio()
 @app.post("/recognition-audio/")
-async def upload_audio(file: UploadFile = File(...)):
+async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     # Проверяем, что файл имеет расширение mp3
     pprint(file.content_type)
     pprint(file.__dict__)
     if file.filename.split('.')[1] != 'mp3':
         return {"error": "File type not supported. Please upload an MP3 file."}
-
+    
+    # userID=0
     # Сохраняем файл в папку voice/
     file_location = f"voice/{file.filename}"
     with open(file_location, "wb") as audio_file:
         audio_file.write(await file.read())
 
+    # Транскрибируем аудиофайл
+    text = transcript_audio(file_location)
+
+    url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
+    params={'chat_id':userID, 'text':text, 'messanger':'telegram'}
+    
+    answer = await request_data(url, params)
+    answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
+    file_location = answer_voice_file
+
+    async def file_remover():
+        try:
+            os.remove(file_location)
+            print(f"Файл {file_location} успешно удален.")
+        except Exception as e:
+            print(f"Ошибка при удалении файла {file_location}: {e}")
+
+
     return FileResponse(
         path=file_location,
         media_type="audio/mpeg",
-        filename=file.filename
+        filename=file.filename,
+        background=file_remover
     )
 
 
