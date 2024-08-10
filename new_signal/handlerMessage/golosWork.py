@@ -52,29 +52,69 @@ def smooth_sound(sound, gain=0.9):
         channels=sound.channels
     )
     return smoothed_audio
+# Функция для добавления эха
+# def add_echo(sound, delay=300, decay=0.03):
+def add_echo(sound, delay=100, decay=0.03):
+    echo_sound = sound
+    delay_samples = int(delay * sound.frame_rate / 1000)  # Преобразуем задержку в сэмплы
+    
+    # Создаем массив для эха
+    echo_samples = np.zeros(len(sound.get_array_of_samples()) + delay_samples)
+    
+    # Добавляем оригинальный звук
+    echo_samples[:len(sound.get_array_of_samples())] += np.array(sound.get_array_of_samples())
+    
+    # Добавляем эхо
+    echo_samples[delay_samples:delay_samples + len(sound.get_array_of_samples())] += np.array(sound.get_array_of_samples()) * decay
+    
+    echo_audio = AudioSegment(
+        echo_samples.astype(np.int16).tobytes(),
+        frame_rate=sound.frame_rate,
+        sample_width=sound.sample_width,
+        channels=sound.channels
+    )
+    
+    return echo_audio[:len(sound) + delay_samples]  # Обрезаем до нужной длины
 
+# Функция для увеличения скорости воспроизведения
+def increase_speed(sound, speed_factor=1.25):
+    return sound.speedup(playback_speed=speed_factor)
+#искажение
+# def add_distortion(sound, gain=2):
+#     samples = np.array(sound.get_array_of_samples())
+#     distorted_samples = np.clip(samples * gain, -32768, 32767)  # Ограничиваем значения
+#     distorted_audio = AudioSegment(
+#         distorted_samples.astype(np.int16).tobytes(),
+#         frame_rate=sound.frame_rate,
+#         sample_width=sound.sample_width,
+#         channels=sound.channels
+#     )
+#     return distorted_audio
 # Загрузка аудиофайла
 audio = AudioSegment.from_file("audio.mp3")
 
 # Изменение высоты тона (увеличиваем на 2 полутонов для более приятного голоса)
-pitched_audio = change_pitch(audio, semitones=2.5)
+pitched_audio = change_pitch(audio, semitones=-2)
 
+aud= increase_speed(pitched_audio)
 # Добавление эффекта "робота"
 # robot_audio = add_robot_effect(pitched_audio, modulation_frequency=1)
 
 # Добавление реверберации
 # reverb_audio = add_reverb(robot_audio, decay=0.1)
-reverb_audio = add_reverb(pitched_audio, decay=0.1)
+
 
 # Сглаживание звука
 # final_audio = smooth_sound(reverb_audio, gain=0.95)
-final_audio = smooth_sound(reverb_audio, gain=0.35)
-
+final_audio = smooth_sound(aud, gain=2)
+# final_audio2 = add_echo(final_audio, delay=50, decay=0.03)
+# final_audio=add_distortion(final_audio)
+# final_audio = add_reverb(final_audio, decay=0.5)
 # Повышение громкости в 2 раза (6 дБ)
-final_audio = final_audio + 12 # Или final_audio.apply_gain(6)
+# final_audio = final_audio + 12 # Или final_audio.apply_gain(6)
 
 # Сохранение результата
-final_audio.export("friendly_orator_voice_louder.mp3", format="mp3")
+final_audio2.export("signal_furs4.mp3", format="mp3")
 
 # Воспроизведение результата (опционально)
-play(final_audio)
+play(final_audio2)
