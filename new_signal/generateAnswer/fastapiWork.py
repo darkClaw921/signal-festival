@@ -143,8 +143,9 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     # Проверяем, что файл имеет расширение mp3
     pprint(file.content_type)
     pprint(file.__dict__)
-    if file.filename.split('.')[1] != 'opus':
-        return {"error": "File type not supported. Please upload an opus file."}
+    print(f'{file.filename=}')
+    # if file.filename.split('.')[1] != 'opus':
+    #     return {"error": "File type not supported. Please upload an opus file."}
     
     # userID=0
     # Сохраняем файл в папку voice/
