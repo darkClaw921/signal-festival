@@ -155,7 +155,8 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     with open(file_location, "wb") as audio_file:
         audio_file.write(await file.read())
     
-    if file.filename.split('.')[1] != 'mp4':
+    if file.filename.split('.')[1] == 'mp4':
+        
         file_location=convertMP4toMP3(f'voice/{file.filename}')
         print(f'{file_location=}')
     # Транскрибируем аудиофайл
