@@ -113,7 +113,7 @@ aud= increase_speed(pitched_audio,1.01)
 
 # Добавление реверберации
 # reverb_audio = add_reverb(robot_audio, decay=0.1)
-reverb_audio = add_reverb(aud, decay=0.2)
+reverb_audio = add_reverb(aud, decay=0.5)
 asdasda=add_echo(reverb_audio, delay=200, decay=0.015)
 # Сглаживание звука
 # final_audio = smooth_sound(reverb_audio, gain=0.95)

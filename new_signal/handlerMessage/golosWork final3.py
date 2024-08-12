@@ -107,13 +107,13 @@ def add_distortion(sound, gain=1.5):
 audio = AudioSegment.from_file("audio.mp3")
 
 # Изменение высоты тона (увеличиваем на 2 полутонов для более приятного голоса)
-pitched_audio = change_pitch(audio, semitones=-2.5)
+pitched_audio = change_pitch(audio, semitones=-2)
 
 aud= increase_speed(pitched_audio,1.01)
 
 # Добавление реверберации
 # reverb_audio = add_reverb(robot_audio, decay=0.1)
-reverb_audio = add_reverb(aud, decay=0.2)
+reverb_audio = add_reverb(aud, decay=0.5)
 asdasda=add_echo(reverb_audio, delay=200, decay=0.015)
 # Сглаживание звука
 # final_audio = smooth_sound(reverb_audio, gain=0.95)
@@ -127,7 +127,7 @@ final_audio = smooth_sound(asdasda, gain=2)
 # final_audio = final_audio + 12 # Или final_audio.apply_gain(6)
 
 # Сохранение результата
-final_audio.export("signal_furs3.mp3", format="mp3")
+final_audio.export("signal_furs33.mp3", format="mp3")
 
 # Воспроизведение результата (опционально)
 # play(final_audio)

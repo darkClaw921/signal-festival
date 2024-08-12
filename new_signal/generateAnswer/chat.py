@@ -475,7 +475,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 
     response = client.audio.speech.create(
         model="tts-1",
-        voice="onyx",
+        voice="shimmer",
         input=text,
     )
     fileName=f"voice/{userID}.mp3"
@@ -515,5 +515,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 if __name__ == "__main__":   
   gpt = GPT()
   # a = gpt.answer_assistant('Привет, я хочу узнать о мероприятии на завтра', 1, 0)
-  a = gpt.answer_yandex([{"role": "user", "content": 'привет'}])
+  # a = gpt.answer_yandex([{"role": "user", "content": 'привет'}])
+  a=gpt.answer_voice(3,"""Предусмотрен единый билет на все дни, нельзя купить билет на 1 или 2 дня.
+Детям до 14 лет билет не нужен.""")
   print(a)

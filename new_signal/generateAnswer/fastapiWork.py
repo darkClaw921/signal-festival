@@ -22,6 +22,7 @@ from pathlib import Path
 from translation import transcript_audio
 from fastapi.middleware.cors import CORSMiddleware
 import aiohttp
+from convertMP4 import convertMP4toMP3
 
 
 
@@ -146,15 +147,17 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     pprint(file.content_type)
     pprint(file.__dict__)
     print(f'{file.filename=}')
-    # if file.filename.split('.')[1] != 'opus':
-    #     return {"error": "File type not supported. Please upload an opus file."}
+    
     
     # userID=0
     # Сохраняем файл в папку voice/
     file_location = f"voice/{file.filename}"
     with open(file_location, "wb") as audio_file:
         audio_file.write(await file.read())
-
+    
+    if file.filename.split('.')[1] != 'mp4':
+        file_location=convertMP4toMP3(f'voice/{file.filename}')
+        print(f'{file_location=}')
     # Транскрибируем аудиофайл
     text = transcript_audio(file_location)
     print(f'{text=}')

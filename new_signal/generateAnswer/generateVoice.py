@@ -4,7 +4,7 @@ from elevenlabs.client import AsyncElevenLabs, ElevenLabs
 from pprint import pprint
 
 eleven = AsyncElevenLabs(
-  api_key="4a44fbc5a35373c505c63946d1187308" # Defaults to ELEVEN_API_KEY
+  api_key="" # Defaults to ELEVEN_API_KEY
 )
 async def gen_audio():
     audio = await eleven.generate(
@@ -27,7 +27,7 @@ def main():
     from elevenlabs import generate, play
     
     client=ElevenLabs(
-        api_key="4a44fbc5a35373c505c63946d1187308" # Defaults to ELEVEN_API_KEY
+        api_key="" # Defaults to ELEVEN_API_KEY
     )
     
     audio = client.generate(
