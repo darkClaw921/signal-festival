@@ -10,6 +10,7 @@ def transcript_audio(pathFile:str):
     print(pathFile)
     print('transcript_audio')
     audio_file = open(pathFile, "rb")
+    
     transcript = client.audio.transcriptions.create(
         model="whisper-1", 
         file=audio_file, 
@@ -19,7 +20,7 @@ def transcript_audio(pathFile:str):
         # prompt="disassemble this audio file and write in the format Client: Operator:"
 
     )
-
+    print('endtrasncript')
     return transcript
 
 # audio_file = open("f_187667f2dd2a3886.mp3", "rb")

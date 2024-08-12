@@ -65,6 +65,7 @@ app.add_middleware(
 # Убедитесь, что папка voice существует
 os.makedirs("voice", exist_ok=True)
 
+HANDLER_MESSAGE_URL=os.getenv('HANDLER_MESSAGE_URL')
 async def request_data(url, params):
     async with aiohttp.ClientSession() as session:
         async with session.post(url=url,json=params) as response:
@@ -156,11 +157,13 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
 
     # Транскрибируем аудиофайл
     text = transcript_audio(file_location)
-
+    print(f'{text=}')
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
     params={'chat_id':userID, 'text':text, 'messanger':'telegram'}
     
+    print(f'{params=}')
     answer = await request_data(url, params)
+    print(f'{answer=}')
     answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
     file_location = answer_voice_file
 
