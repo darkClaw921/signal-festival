@@ -138,6 +138,7 @@ def update_model_index():
     
 #     fileName='voice/{}.mp3'
 #     transcript_audio()
+# https://generate.ai-akedemi-project.ru/recognition-audio/
 @app.post("/recognition-audio/")
 async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     # Проверяем, что файл имеет расширение mp3
