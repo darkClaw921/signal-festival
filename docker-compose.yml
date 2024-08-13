@@ -13,10 +13,10 @@ services:
       - '--api'
       - "--certificatesresolvers.le.acme.httpchallenge=true"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"  # Используйте тестовый сервер
-      
-      # - '--entrypoints.websecure.http.tls.certificates.certFile=/certs/certificate.crt'
-      # - '--entrypoints.websecure.http.tls.certificates.keyFile=/certs/private.key'
+      # - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"  # Используйте тестовый сервер
+      # - "--certificatesresolvers.le.acme.caserver=https://acme.zerossl.com/v1/DV90"
+      - '--entrypoints.websecure.http.tls.certificates.certFile=/certs/certificate.crt'
+      - '--entrypoints.websecure.http.tls.certificates.keyFile=/certs/private.key'
 
     ports:
       - '80:80'
@@ -40,7 +40,7 @@ services:
   portainer:
     image: portainer/portainer-ce
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
@@ -58,7 +58,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.redis.rule=Host(`redis.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.redis.loadbalancer.server.port=6379"  
 
@@ -82,7 +82,7 @@ services:
           cpus: '0.2'
           memory: 500M
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.postgres_exporter.rule=Host(`postgres-exporter.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.postgres_exporter.loadbalancer.server.port=9187"  
 
@@ -112,7 +112,7 @@ services:
           cpus: '1'
           memory: 4G
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=enable"
       - "traefik.http.routers.postgres.rule=Host(`postgres.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.postgres.loadbalancer.server.port=5432"  
 
@@ -149,7 +149,7 @@ services:
   telegram_connect:
     image: telegram_connect
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.telegram_connect.rule=Host(`telegram.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.telegram_connect.entrypoints=websecure"
       # - "traefik.http.routers.telegram_connect.tls.certresolver=myresolver"
@@ -168,6 +168,7 @@ services:
       - TOKEN_BOT=${TOKEN_BOT}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - HANDLER_MESSAGE_URL=${HANDLER_MESSAGE_URL}:${PORT_HANDLER_MESSAGE}
+      - DOMAIN=${DOMAIN}
     depends_on:
       - postgres
     ports:
@@ -201,7 +202,7 @@ services:
   generate_answer:
     image: generate_answer
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.generate_answer.rule=Host(`generate.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.generate_answer.entrypoints=websecure"
       # - "traefik.http.routers.generate_answer.tls.certresolver=myresolver"
@@ -228,7 +229,7 @@ services:
   sender_message:
     image: sender_message
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.sender_message.rule=Host(`sender.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.sender_message.entrypoints=websecure"
       # - "traefik.http.routers.sender_message.tls.certresolver=myresolver"
@@ -248,7 +249,7 @@ services:
   vector_db_work:
     image: vector_db_work
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.vector_db_work.rule=Host(`vector.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.vector_db_work.entrypoints=websecure"
       # - "traefik.http.routers.vector_db_work.tls.certresolver=myresolver"

@@ -44,7 +44,7 @@ SECRECT_KEY = os.getenv('SECRET_CHAT')
 PORT_HANDLER_MESSAGE=os.getenv('PORT_HANDLER_MESSAGE')
 # sql = Ydb()
 HANDLER_MESSAGE_URL=os.getenv('HANDLER_MESSAGE_URL')
-
+DOMAIN=os.getenv('DOMAIN')
 router = Router()
 
 bot = Bot(token=TOKEN,)
@@ -96,8 +96,8 @@ async def voice_processing(msg: Message, state: FSMContext):
 async def send_welcome(message: Message):
     builder = InlineKeyboardBuilder()
 
-    builder.button(text='Перейти на гоолосовой ввод', url='http://vizualize-audio.ai-akedemi-project.ru')
-    # builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url='https://vizualize-audio.ai-akedemi-project.ru'))
+    # builder.button(text='Перейти на гоолосовой ввод', url='http://vizualize-audio.ai-akedemi-project.ru')
+    builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url=f'https://vizualize-audio.{DOMAIN}'))
     # keyboard = InlineKeyboardMarkup()
     # button = InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
     # keyboard.add(button)
