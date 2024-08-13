@@ -141,7 +141,7 @@ def update_model_index():
 #     fileName='voice/{}.mp3'
 #     transcript_audio()
 # https://generate.ai-akedemi-project.ru/recognition-audio/
-@app.post("/recognition-audio/")
+@app.post("/api/recognition-audio/")
 async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     # Проверяем, что файл имеет расширение mp3
     pprint(file.content_type)
@@ -192,7 +192,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
 
 # from fastapi.responses import FileResponse
 # @app.get("/generate-audio/{text}/{userID}")
-@app.get("/api/generate-audio/")
+@app.get("/generate-audio/")
 async def generate_audio(data: Gen_Audio):
     text=data.text
     userID=data.userID

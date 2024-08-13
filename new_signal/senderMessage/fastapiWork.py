@@ -78,7 +78,7 @@ async def voice_generate(text:str, userID:int):
     # response=await request_data(f'http://{GENERATE_ANSWER_URL}/generate-audio', params)
     
     
-    url = f"http://{GENERATE_ANSWER_URL}/api/generate-audio"  # Замените на адрес вашего сервера A
+    url = f"http://{GENERATE_ANSWER_URL}/generate-audio"  # Замените на адрес вашего сервера A
  
     async with aiohttp.ClientSession() as session:
         async with session.get(url,json=params) as response:
