@@ -192,7 +192,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
 
 # from fastapi.responses import FileResponse
 # @app.get("/generate-audio/{text}/{userID}")
-@app.get("/generate-audio/")
+@app.get("/api/generate-audio/")
 async def generate_audio(data: Gen_Audio):
     text=data.text
     userID=data.userID
