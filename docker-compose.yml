@@ -274,7 +274,7 @@ services:
     image: vizualize_audio
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.generate_answer.rule=Host(`generate.${DOMAIN}`)"  # Замените на ваш домен
+      - "traefik.http.routers.vizualize_audio.rule=Host(`generate.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize-audio.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.services.vizualize_audio.loadbalancer.server.port=${PORT_VIZUALIZE_AUDIO}"
       - "traefik.http.services.vizualize_audio.loadbalancer.server.port=80"
