@@ -95,8 +95,8 @@ async def voice_processing(msg: Message, state: FSMContext):
 @router.message(Command('sendvoice'))
 async def send_welcome(message: Message):
     builder = InlineKeyboardBuilder()
-    
-    builder.button(text='Перейти на гоолосовой ввод', url='http://vizualize-audio.ai-akedemi-project.ru')
+
+    builder.button(text='Перейти на гоолосовой ввод', url='https://vizualize-audio.ai-akedemi-project.ru')
     # builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url='https://vizualize-audio.ai-akedemi-project.ru'))
     # keyboard = InlineKeyboardMarkup()
     # button = InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
