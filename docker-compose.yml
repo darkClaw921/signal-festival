@@ -22,7 +22,7 @@ services:
       - ./traefik/acme:/acme
     labels:
       - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.ai-akedemi-project.ru`)
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
       - traefik.http.routers.traefik.service=api@internal
       - traefik.http.routers.traefik.entrypoints=web,websecure
 
@@ -36,7 +36,7 @@ services:
     image: portainer/portainer-ce
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"  
     volumes:
@@ -54,7 +54,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.redis.rule=Host(`redis.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.redis.rule=Host(`redis.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.redis.loadbalancer.server.port=6379"  
 
   postgres_exporter:
@@ -78,7 +78,7 @@ services:
           memory: 500M
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.postgres_exporter.rule=Host(`postgres-exporter.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.postgres_exporter.rule=Host(`postgres-exporter.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.postgres_exporter.loadbalancer.server.port=9187"  
 
   postgres:
@@ -108,7 +108,7 @@ services:
           memory: 4G
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.postgres.rule=Host(`postgres.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.postgres.rule=Host(`postgres.${DOMAIN}`)"  # Замените на ваш домен
       - "traefik.http.services.postgres.loadbalancer.server.port=5432"  
 
 
@@ -117,7 +117,7 @@ services:
     image: dpage/pgadmin4:latest
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.pgadmin.entrypoints=websecure"
       # - "traefik.http.routers.pgadmin.tls.certresolver=myresolver"
       # - "traefik.http.services.pgadmin.loadbalancer.server.port=5050" 
@@ -145,7 +145,7 @@ services:
     image: telegram_connect
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.telegram_connect.rule=Host(`telegram.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.telegram_connect.rule=Host(`telegram.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.telegram_connect.entrypoints=websecure"
       # - "traefik.http.routers.telegram_connect.tls.certresolver=myresolver"
       - "traefik.http.services.telegram_connect.loadbalancer.server.port=${PORT_TELEGRAM_CONNECT}"
@@ -172,7 +172,7 @@ services:
     image: handler_message
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.handler_message.rule=Host(`handler.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.handler_message.rule=Host(`handler.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.handler_message.entrypoints=websecure"
       # - "traefik.http.routers.handler_message.tls.certresolver=myresolver"
       - "traefik.http.services.handler_message.loadbalancer.server.port=${PORT_HANDLER_MESSAGE}"
@@ -197,7 +197,7 @@ services:
     image: generate_answer
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.generate_answer.rule=Host(`generate.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.generate_answer.rule=Host(`generate.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.generate_answer.entrypoints=websecure"
       # - "traefik.http.routers.generate_answer.tls.certresolver=myresolver"
       - "traefik.http.services.generate_answer.loadbalancer.server.port=${PORT_GENERATE_ANSWER}"
@@ -224,7 +224,7 @@ services:
     image: sender_message
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sender_message.rule=Host(`sender.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.sender_message.rule=Host(`sender.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.sender_message.entrypoints=websecure"
       # - "traefik.http.routers.sender_message.tls.certresolver=myresolver"
       - "traefik.http.services.sender_message.loadbalancer.server.port=${PORT_SENDER_MESSAGE}"
@@ -244,7 +244,7 @@ services:
     image: vector_db_work
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vector_db_work.rule=Host(`vector.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.vector_db_work.rule=Host(`vector.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.routers.vector_db_work.entrypoints=websecure"
       # - "traefik.http.routers.vector_db_work.tls.certresolver=myresolver"
       - "traefik.http.services.vector_db_work.loadbalancer.server.port=${PORT_VECTOR_DB_WORK}"
@@ -266,7 +266,7 @@ services:
     image: vizualize_audio
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize-audio.ai-akedemi-project.ru`)"  # Замените на ваш домен
+      - "traefik.http.routers.vizualize_audio.rule=Host(`vizualize-audio.${DOMAIN}`)"  # Замените на ваш домен
       # - "traefik.http.services.vizualize_audio.loadbalancer.server.port=${PORT_VIZUALIZE_AUDIO}"
       - "traefik.http.services.vizualize_audio.loadbalancer.server.port=80"
     security_opt:
