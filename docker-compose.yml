@@ -17,13 +17,14 @@ services:
       
       - '--entrypoints.websecure.http.tls.certificates.certFile=/certs/certificate.crt'
       - '--entrypoints.websecure.http.tls.certificates.keyFile=/certs/private.key'
-      
+
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/acme:/acme
+      - ./certs:/certs  # Монтируем директорию с сертификатами
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
