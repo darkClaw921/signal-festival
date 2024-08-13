@@ -97,7 +97,8 @@ async def send_welcome(message: Message):
     builder = InlineKeyboardBuilder()
 
     # builder.button(text='Перейти на гоолосовой ввод', url='http://vizualize-audio.ai-akedemi-project.ru')
-    builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url=f'https://vizualize-audio.{DOMAIN}'))
+    # builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url=f'https://vizualize-audio.{DOMAIN}'))
+    builder.button(text='Перейти на гоолосовой ввод', web_app=WebAppInfo(url=f'https://generate.{DOMAIN}'))
     # keyboard = InlineKeyboardMarkup()
     # button = InlineKeyboardButton("Перейти на гоолосовой ввод", url="https://signal.ai-akedemi-project.ru:5008")
     # keyboard.add(button)
