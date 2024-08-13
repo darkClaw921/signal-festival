@@ -16,6 +16,7 @@ def transcript_audio(pathFile:str):
         file=audio_file, 
         response_format="text",
         prompt="разбери этот аудиофайл и напиши по строчкам"
+        # prompt="напши в ответе только то что было сказанно"
         # prompt='напши в ответе только то что было сказанно на русском языке и начинай каждое продложение с новой строки'
         # prompt="disassemble this audio file and write in the format Client: Operator:"
 
@@ -98,14 +99,15 @@ def razdel_na_abzacy(filename, output_filename):
 
 if __name__ == '__main__':
     # Введите имена файлов и пример текста.
-    filename = 'f_187667f2dd2a3886.txt'
-    output_filename = 'abzacy.txt'
+    # filename = 'f_187667f2dd2a3886.txt'
+    # output_filename = 'abzacy.txt'
     
     # split_before_uppercase(text_example)
     # print(split_before_uppercase(text_example))
     # Вызов функции.
-    razdel_na_abzacy(filename, output_filename,)
-
+    # razdel_na_abzacy(filename, output_filename,)
+    a=transcript_audio('audio.mp4')
+    pprint(a)
 # transcript = client.audio.transcriptions.create(
 #   model="whisper-1", 
 #   file=audio_file, 

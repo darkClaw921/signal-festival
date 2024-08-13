@@ -15,3 +15,5 @@ def convertMP4toMP3(path):
 
 # # Extract audio from video
 # video.audio.write_audiofile("example.mp3")
+if __name__ == '__main__':
+    convertMP4toMP3('audio.mp4')
