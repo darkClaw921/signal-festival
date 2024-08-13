@@ -163,6 +163,10 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     text = transcript_audio(file_location)
     print(f'{text=}')
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
+    if userID == 'null':
+        userID = 0
+    else:
+        userID=int(userID) 
     params={'chat_id':userID, 'text':text, 'messanger':'telegram'}
     
     print(f'{params=}')
