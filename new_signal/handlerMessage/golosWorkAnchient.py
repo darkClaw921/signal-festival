@@ -76,7 +76,7 @@ alien_voice_with_echo = add_echo(reverb_audio, delay=300, decay=0.01)
 
 # Добавление искажения
 final_audio = add_distortion(alien_voice_with_echo, gain=1.0)
-
+final_audio =final_audio.speedup(playback_speed=1.1)
 # Сохранение результата
 # final_audio.export("ancient_alien_voice.mp3", format="mp3")
 

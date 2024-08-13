@@ -13,7 +13,11 @@ services:
       - '--api'
       - "--certificatesresolvers.le.acme.httpchallenge=true"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"  # Используйте тестовый сервер
+      # - "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"  # Используйте тестовый сервер
+      
+      - '--entrypoints.websecure.http.tls.certificates.certFile=/certs/certificate.crt'
+      - '--entrypoints.websecure.http.tls.certificates.keyFile=/certs/private.key'
+      
     ports:
       - '80:80'
       - '443:443'
