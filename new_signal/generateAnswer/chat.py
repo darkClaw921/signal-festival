@@ -516,7 +516,7 @@ if __name__ == "__main__":
   gpt = GPT()
 #   # a = gpt.answer_assistant('Привет, я хочу узнать о мероприятии на завтра', 1, 0)
 #   # a = gpt.answer_yandex([{"role": "user", "content": 'привет'}])
-  a=gpt.answer_voice('кто я?',"""кто я?""")
+  a=gpt.answer_voice('я живой?',"""я живой???""")
   print(a)
 
   # prepare_table_for_text()

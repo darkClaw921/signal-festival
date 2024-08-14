@@ -63,6 +63,19 @@ def add_distortion(sound, gain=1.5):
     return distorted_audio
 
 
+def speed_change(sound, speed=1.0):
+    # Manually override the frame_rate. This tells the computer how many
+    # samples to play per second
+    sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={
+        "frame_rate": int(sound.frame_rate * speed)
+    })
+
+    # convert the sound with altered frame rate to a standard frame rate
+    # so that regular playback programs will work right. They often only
+    # know how to play audio at standard frame rate (like 44.1k)
+    return sound_with_altered_frame_rate.set_frame_rate(sound.frame_rate)
+
+
 def add_effect_to_audio(pahtFile:str = 'audio.mp3'):
     # Загрузка аудиофайла
     audio = AudioSegment.from_file(pahtFile)
@@ -78,7 +91,11 @@ def add_effect_to_audio(pahtFile:str = 'audio.mp3'):
 
     # Добавление искажения
     final_audio = add_distortion(alien_voice_with_echo, gain=1.0)
+
     final_audio =final_audio.speedup(playback_speed=1.1)
+
+
+    
     # Сохранение результата
     # final_audio.export("ancient_alien_voice.mp3", format="mp3")
 
@@ -88,4 +105,4 @@ def add_effect_to_audio(pahtFile:str = 'audio.mp3'):
     final_audio.export(pahtFile, format="mp3")
 
 if __name__ == '__main__':
-    add_effect_to_audio('voice/где я?.mp3')
+    add_effect_to_audio('voice/я живой?.mp3')

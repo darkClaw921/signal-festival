@@ -144,8 +144,8 @@ services:
     expose:
       - "80" # Указывает, что контейнер слушает на порту 80
   # bash:
-    # ports:
-    #   - 5050:80
+    ports:
+      - "5050:80"
 
   telegram_connect:
     image: telegram_connect
