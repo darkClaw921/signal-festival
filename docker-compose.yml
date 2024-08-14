@@ -141,6 +141,7 @@ services:
         limits:
           cpus: '0.5'
           memory: 1G
+    user: "5050:5050"
     expose:
       - "80" # Указывает, что контейнер слушает на порту 80
   # bash:
