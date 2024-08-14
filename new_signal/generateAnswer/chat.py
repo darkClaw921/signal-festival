@@ -411,7 +411,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
   def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0):
     
     #Выборка документов по схожести с вопросом 
-    docs = search_index.similarity_search(topic, k=2)
+    docs = search_index.similarity_search(topic, k=5)
     if (verbose): print('\n ===========================================: ')
     message_content = re.sub(r'\n{2}', ' ', '\n '.join([f'\nМероприятие №{i+1}\n=====================' + doc.page_content + '\n' for i, doc in enumerate(docs)]))
     if (verbose): print('message_content :\n ======================================== \n', message_content)
