@@ -83,7 +83,9 @@ async def handler_in_command(chat_id: int, command: str, messanger: str,):
         await send_message(chat_id, 'История диалога очищена', messanger, IS_AUDIO=False)
     
     elif command == '/start':
-        nicname=messanger.replace('telegram','').strip()
+        nicname=messanger.split(' ')[1]
+        messanger=messanger.split(' ')[0]
+
         await send_message(chat_id, 
                            'Привет! Я - комьюнити-менеджер фестиваля "Сигнал". Чем я могу помочь?', 
                            messanger, IS_AUDIO)
