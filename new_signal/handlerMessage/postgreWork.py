@@ -77,7 +77,7 @@ class Message(Base):
     __tablename__ = 'Message'
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     created_date = Column(DateTime)
-    group_id = Column(BigInteger, ForeignKey('Group.id'))
+    group_id = Column(BigInteger)
     user_id = Column(BigInteger, ForeignKey('User.id'))    
     message_id = Column(BigInteger)
     payload = Column(String)
