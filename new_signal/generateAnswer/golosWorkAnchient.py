@@ -86,3 +86,6 @@ def add_effect_to_audio(pahtFile:str = 'audio.mp3'):
     # play(final_audio)
 
     final_audio.export(pahtFile, format="mp3")
+
+if __name__ == '__main__':
+    add_effect_to_audio('voice/3.mp3')

@@ -175,7 +175,8 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     print(f'{answer=}')
     answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
     file_location = answer_voice_file
-
+    
+    print(f'{file_location=}')
     add_effect_to_audio(file_location)
 
 

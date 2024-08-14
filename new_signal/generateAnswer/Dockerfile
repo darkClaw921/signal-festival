@@ -2,7 +2,7 @@
 FROM python:3.12
 
 ENV TZ=Europe/Moscow
-RUN apt-get update && apt-get install -y nano htop vim default-libmysqlclient-dev build-essential python3-mysqldb redis-server
+RUN apt-get update && apt-get install -y nano htop vim default-libmysqlclient-dev build-essential python3-mysqldb redis-server ffmpeg
 RUN apt-get install -y wireguard iproute2 openresolv
 
 
