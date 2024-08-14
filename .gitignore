@@ -20,6 +20,7 @@ work_dir/
 *.csv
 *.sh
 testDocker/
+certs/
 # *.txt
 session_name.session
 session_name.session-journal
