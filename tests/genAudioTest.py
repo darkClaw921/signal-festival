@@ -37,6 +37,9 @@ async def main(url, file_path, count):
         for i in range(count):
             user_id = random.randint(1000, 9999)  # Генерация случайного userID
             tasks.append(fetch(session, url, file_path, user_id))
+            delay = random.uniform(1, 3)  # Генерация случайной задержки от 1 до 3 секунд
+            await asyncio.sleep(delay)  # Задержка перед следующим запросом
+
         response_times = await asyncio.gather(*tasks)
         return response_times
     
@@ -47,10 +50,15 @@ def calculate_statistics(response_times):
     return max_time, min_time, avg_time
 
 if __name__ == "__main__":
+    import os 
+    #remove responce files
+    for file in os.listdir():
+        if file.startswith("response_"):
+            os.remove(file)
     url = "https://generate.ai-akedemi-project.ru/api/recognition-audio/"
     file_path = "audio.mp3"  # Путь к вашему аудиофайлу
     user_id = 1234  # Ваш userID
-    count = 2 # Количество запросов
+    count = 5 # Количество запросов
 
     response_times = asyncio.run(main(url, file_path, count))
 
