@@ -105,6 +105,14 @@ async def send_welcome(message: Message):
     
     await message.answer("Добро пожаловать! Нажмите на кнопку ниже, чтобы спрашивать голосом ", reply_markup=builder.as_markup())
 
+@router.message(Command('start'))
+async def send_welcome(msg: Message):
+    nickname = msg.from_user.username
+    text=msg.text
+    url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
+    params={'chat_id':msg.chat.id, 'text':text, 'messanger':f'telegram {nickname}'}
+    await request_data(url, params)
+    
 
 #Обработка сообщений
 @router.message()
@@ -118,7 +126,7 @@ async def message(msg: Message, state: FSMContext):
     text=msg.text
     # url=f'http://{IP_SERVER}:{PORT_HANDLER_MESSAGE}/handler_message'
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
-    params={'chat_id':msg.chat.id, 'text':text, 'messanger':f'telegram {nickname}'}
+    params={'chat_id':msg.chat.id, 'text':text, 'messanger':f'telegram'}
     await request_data(url, params)
    
     
