@@ -38,4 +38,3 @@ def prepare_table_for_text(file_path:str='Рабочая таблица — Ст
     workbook.close()
     return text
 
-# prepare_table_for_text()

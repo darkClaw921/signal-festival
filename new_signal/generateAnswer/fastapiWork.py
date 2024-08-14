@@ -23,7 +23,7 @@ from translation import transcript_audio
 from fastapi.middleware.cors import CORSMiddleware
 import aiohttp
 from convertMP4 import convertMP4toMP3
-
+from golosWorkAnchient import add_effect_to_audio
 
 
 gpt=GPT()
@@ -163,6 +163,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     text = transcript_audio(file_location)
     print(f'{text=}')
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
+    
     if userID == 'null':
         userID = 0
     else:
@@ -174,6 +175,9 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     print(f'{answer=}')
     answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
     file_location = answer_voice_file
+
+    add_effect_to_audio(file_location)
+
 
     async def file_remover():
         try:

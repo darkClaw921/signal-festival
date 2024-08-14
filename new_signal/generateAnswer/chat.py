@@ -513,12 +513,35 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 
   
 if __name__ == "__main__":   
-  gpt = GPT()
-  # a = gpt.answer_assistant('Привет, я хочу узнать о мероприятии на завтра', 1, 0)
-  # a = gpt.answer_yandex([{"role": "user", "content": 'привет'}])
-  a=gpt.answer_voice(3,"""
-Signal 2024. Ghosty.
-Мысли музыканта как сигнал для медиа-контента. 
+#   gpt = GPT()
+#   # a = gpt.answer_assistant('Привет, я хочу узнать о мероприятии на завтра', 1, 0)
+#   # a = gpt.answer_yandex([{"role": "user", "content": 'привет'}])
+#   a=gpt.answer_voice(3,"""
+# Signal 2024. Ghosty.
+# Мысли музыканта как сигнал для медиа-контента. 
 
-Технологичная инсталляция, разработанная студией NeuroLab приоткроет завесу тайны над внутренним миром человека. Выступающие на сцене Ghosty артисты будут снабжены оголовьем нейроинтерфейса, который в реальном времени будет считывать их мозговую активность и интерпретировать в проекцию.""")
-  print(a)
+# Технологичная инсталляция, разработанная студией NeuroLab приоткроет завесу тайны над внутренним миром человека. Выступающие на сцене Ghosty артисты будут снабжены оголовьем нейроинтерфейса, который в реальном времени будет считывать их мозговую активность и интерпретировать в проекцию.""")
+#   print(a)
+
+  # prepare_table_for_text()
+  import openai
+
+  # Установите ваш API-ключ
+  openai.api_key = key
+
+  # Получение информации о балансе и лимитах
+  try:
+      account_info = openai.Account.retrieve()
+      
+      # Получение баланса
+      balance = account_info['balance']
+      print(f"Ваш текущий баланс: {balance} долларов")
+      
+      # Получение лимитов
+      usage_limits = account_info.get('usage_limits', {})
+      print("Лимиты использования:")
+      for key, value in usage_limits.items():
+          print(f"{key}: {value}")
+
+  except Exception as e:
+      print(f"Произошла ошибка: {e}")

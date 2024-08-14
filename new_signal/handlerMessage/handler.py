@@ -223,8 +223,11 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     pprint(answer)
     answer=answer['answer']
 
+    
     params = {'chat_id': chat_id, 'text': answer, 'messanger': messanger, 'isAudio': IS_AUDIO}
     pprint(params)
+    # if messanger != 'site':
+        # await send_message(chat_id, answer, messanger, IS_AUDIO)
     await send_message(chat_id, answer, messanger, IS_AUDIO)
     # await request_data_param(f'http://{SENDER_MESSAGE_URL}/send_message', params)
 
