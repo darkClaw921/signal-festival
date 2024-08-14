@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 from googleSheet import parse_google_sheet
 from qvest import QuestManager
-from postgreWork import get_all_user_ids, add_new_user
+from postgreWork import get_all_user_ids, add_new_user, add_new_message
 import json
 load_dotenv()
 
@@ -83,11 +83,13 @@ async def handler_in_command(chat_id: int, command: str, messanger: str,):
         await send_message(chat_id, 'История диалога очищена', messanger, IS_AUDIO=False)
     
     elif command == '/start':
+        nicname=messanger.replace('telegram','').strip()
         await send_message(chat_id, 
                            'Привет! Я - комьюнити-менеджер фестиваля "Сигнал". Чем я могу помочь?', 
                            messanger, IS_AUDIO)
         STATES[chat_id] = 'start'
-        add_new_user(chat_id, 'telegram',1)
+        # messanger
+        add_new_user(chat_id, nicname,1)
 
     elif command.startswith('/quest'):
         
@@ -193,11 +195,11 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     # answer = gpt.answer(promtPreparePost,messagesList)
     
 
-    date=datetime.now().strftime("%d.%m.%Y %A")
+    date=datetime.now().strftime("%d %H:%M")
     
     
     promt=('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
-    
+    promt=promt.replace('[date]',f'{date}')
     params = {'text':text,'promt': promt, 
               'history': history, 'model_index': 'main', 
               'temp': 0.5, 'verbose': 1,
@@ -232,7 +234,9 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     # await request_data_param(f'http://{SENDER_MESSAGE_URL}/send_message', params)
 
     add_message_to_history(chat_id, 'system', answer) 
+    add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload='0')
+    add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=answer, type_chat='system', payload=answer)
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
-    dateNow = datetime.now().strftime("%d.%m.%Y")
+    
     # await msg.answer(answer, parse_mode='Markdown')
     return answer

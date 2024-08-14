@@ -1,17 +1,18 @@
-from openai import OpenAI
+from openai import OpenAI,AsyncOpenAI
 import os
 from pprint import pprint
 from dotenv import load_dotenv
 load_dotenv()
 key = os.environ.get('OPENAI_API_KEY')
-client = OpenAI(api_key=key,)
+# client = OpenAI(api_key=key,)
+client = AsyncOpenAI(api_key=key)
 
-def transcript_audio(pathFile:str):
+async def transcript_audio(pathFile:str):
     print(pathFile)
     print('transcript_audio')
     audio_file = open(pathFile, "rb")
     
-    transcript = client.audio.transcriptions.create(
+    transcript = await client.audio.transcriptions.create(
         model="whisper-1", 
         file=audio_file, 
         response_format="text",
@@ -97,17 +98,24 @@ def razdel_na_abzacy(filename, output_filename):
     # Печать сообщения о результатах
     print(f'\nРазделенный текст записан в файл: {output_filename}')
 
+
+async def main():
+    a=await transcript_audio('audio.mp3')
+    pprint(a)
+
 if __name__ == '__main__':
     # Введите имена файлов и пример текста.
     # filename = 'f_187667f2dd2a3886.txt'
     # output_filename = 'abzacy.txt'
-    
+    # import asyncio
     # split_before_uppercase(text_example)
     # print(split_before_uppercase(text_example))
     # Вызов функции.
     # razdel_na_abzacy(filename, output_filename,)
-    a=transcript_audio('audio.mp4')
-    pprint(a)
+    import asyncio
+    asyncio.run(main())
+    # a=transcript_audio('audio.mp4')
+    # pprint(a)
 # transcript = client.audio.transcriptions.create(
 #   model="whisper-1", 
 #   file=audio_file, 

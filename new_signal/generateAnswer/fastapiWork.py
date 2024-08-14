@@ -119,7 +119,7 @@ async def generate_answer(data: Generate):
         promt=data.promt
     
     pprint(data.__dict__)
-    answer, token, price, docs =gpt.answer_index(system=promt, topic=text, history=history, 
+    answer, token, price, docs =await gpt.answer_index(system=promt, topic=text, history=history, 
                                                  search_index=MODELS_INDEX[model_index],
                                                  temp=temp, verbose=0)
     return {"answer": answer, 'isAudio': isAudio, 'token': token, 'price': price, 'docs': docs}
@@ -160,7 +160,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
         file_location=convertMP4toMP3(f'voice/{file.filename}')
         print(f'{file_location=}')
     # Транскрибируем аудиофайл
-    text = transcript_audio(file_location)
+    text = await transcript_audio(file_location)
     print(f'{text=}')
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
     
@@ -173,9 +173,9 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     print(f'{params=}')
     answer = await request_data(url, params)
     print(f'{answer=}')
-    answer_voice_file = gpt.answer_voice(userID=userID, text=answer)
+    answer_voice_file = await gpt.answer_voice(userID=userID, text=answer)
     file_location = answer_voice_file
-    
+
     print(f'{file_location=}')
     add_effect_to_audio(file_location)
 

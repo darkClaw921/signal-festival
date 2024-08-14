@@ -112,12 +112,13 @@ async def message(msg: Message, state: FSMContext):
     # pprint(msg.__dict__)
     # 241 реф ссылки #240
     userID = msg.from_user.id
+    nickname = msg.from_user.username
     # print(msg.chat.id)
     # print(f"{msg.chat.id=}")
     text=msg.text
     # url=f'http://{IP_SERVER}:{PORT_HANDLER_MESSAGE}/handler_message'
     url=f'http://{HANDLER_MESSAGE_URL}/handler_message'
-    params={'chat_id':msg.chat.id, 'text':text, 'messanger':'telegram'}
+    params={'chat_id':msg.chat.id, 'text':text, 'messanger':f'telegram {nickname}'}
     await request_data(url, params)
    
     

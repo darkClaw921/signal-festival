@@ -11,7 +11,7 @@ from operator import itemgetter
 import re
 from dotenv import load_dotenv
 load_dotenv()
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 import os
 
 # import tiktoken
@@ -30,7 +30,7 @@ import tiktoken
 key = os.environ.get('OPENAI_API_KEY')
 # YC_IAM_TOKEN = os.environ.get('YC_IAM_TOKEN')
 client = OpenAI(api_key=key)
-
+asyncClient = AsyncOpenAI(api_key=key)
 # chat_model = ChatYandexGPT(folder_id='b1g83bovl5hjt7cl583v', model_uri='gpt://b1g83bovl5hjt7cl583v/yandexgpt')       
 class bcolors:
     HEADER = '\033[95m'
@@ -408,7 +408,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 
     return answer
 
-  def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0):
+  async def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0):
     
     #Выборка документов по схожести с вопросом 
     docs = search_index.similarity_search(topic, k=5)
@@ -429,7 +429,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     if (verbose): print('\n ===========================================: ')
     if (verbose): print(f"{self.num_tokens_from_messages(messages, 'gpt-3.5-turbo-0301')} токенов использовано на вопрос")
 
-    completion = client.chat.completions.create(model=self.modelVersion,
+    completion = await asyncClient.chat.completions.create(model=self.modelVersion,
         messages=messages,
         temperature=temp)
     totalToken = completion.usage.total_tokens
@@ -471,9 +471,9 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     print(response.choices[0])
     return response.choices[0].message.content
      
-  def answer_voice(self,userID:str, text:str):
+  async def answer_voice(self,userID:str, text:str):
 
-    response = client.audio.speech.create(
+    response = await asyncClient.audio.speech.create(
         model="tts-1",
         voice="shimmer",
         input=text,
@@ -511,7 +511,10 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     roleAsnwer= {'role': 'user', 'content': answer}
     return roleAsnwer
 
-  
+# async def main():
+  # gpt = GPT()
+  # gpt.answer_assistant
+
 if __name__ == "__main__":   
   gpt = GPT()
 #   # a = gpt.answer_assistant('Привет, я хочу узнать о мероприятии на завтра', 1, 0)
