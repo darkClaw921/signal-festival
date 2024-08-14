@@ -235,9 +235,14 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     await send_message(chat_id, answer, messanger, IS_AUDIO)
     # await request_data_param(f'http://{SENDER_MESSAGE_URL}/send_message', params)
 
-    add_message_to_history(chat_id, 'system', answer) 
-    add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload='0')
-    add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=answer, type_chat='system', payload=answer)
+    add_message_to_history(chat_id, 'system', answer)
+    try: 
+        add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload='0')
+        add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=answer, type_chat='system', payload=answer)
+    except Exception as e:
+        text=f'Ошибка добавления сообщения в базу данных для пользователя {chat_id} {e}'
+        await send_message(400923372, text, 'telegram', IS_AUDIO=False)
+
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     
     # await msg.answer(answer, parse_mode='Markdown')
