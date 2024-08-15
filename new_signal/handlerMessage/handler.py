@@ -192,9 +192,9 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
         return 0
 
     userID=chat_id
-    if len(history) > 10:
+    if len(history) > 15:
         clear_history(chat_id)
-        history=history[-2:]
+        # history=history[-2:]
         add_message_to_history(chat_id, 'user', text)
         history = get_history(chat_id) 
 
