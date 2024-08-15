@@ -203,19 +203,9 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
 
     date=datetime.now().strftime("%d %H:%M")
     
-    # Устанавливаем локаль на русский
-    # locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
-
-    # Получаем текущую дату и время
-    now = datetime.now()
-
-    # Форматируем дату и время
-    formatted_date = now.strftime("Сегодня %d %B, %A. Время сейчас %H:%M")
-
-    # Выводим результат
-    print(formatted_date)
+    
     promt=('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
-    promt=promt.replace('[date]',f'{formatted_date}')
+    
     params = {'text':text,'promt': promt, 
               'history': history, 'model_index': 'main', 
               'temp': 0.5, 'verbose': 1,

@@ -117,9 +117,22 @@ async def generate_answer(data: Generate):
 
     if promt.startswith('https://'):
         promt=gpt.load_prompt(promt)
+        
     else:
         promt=data.promt
+        # Устанавливаем локаль на русский
+    # locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+
+    # Получаем текущую дату и время
+    now = datetime.now()
+
+    # Форматируем дату и время
+    formatted_date = now.strftime("Сегодня %d %B, %A. Время сейчас %H:%M")
+
+    # Выводим результат
+    print(formatted_date)
     
+    promt=promt.replace('[date]',f'{formatted_date}')
     pprint(data.__dict__)
     isVip=False
     if userID in VIP_USERS:
@@ -218,7 +231,7 @@ async def generate_audio(data: Gen_Audio):
     isVip=False
     if userID in VIP_USERS:
         isVip=True
-        
+
     answer_voice_file = gpt.answer_voice(userID=userID, text=text, isVip=isVip)
     answer_voice_file_path = answer_voice_file
     # print(f'{answer_voice_file=}')
