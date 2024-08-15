@@ -33,7 +33,7 @@ PORT = os.getenv('PORT_GENERATE_ANSWER')
 HOST = os.getenv('HOST')
 IP_SERVER = os.getenv('IP_SERVER')
 HANDLER_MESSAGE_URL = os.getenv('HANDLER_MESSAGE_URL')
-
+SENDER_MESSAGE_URL=os.getenv('SENDER_MESSAGE_URL')
 app = FastAPI(
     title="Signal System API",
     description="Generate answer API\nЛоги можно посмотреть по пути /logs\nОчистить логи можно по пути /clear_logs\n",
@@ -154,7 +154,13 @@ def update_model_index():
 
 # @app.get("/recognition-audio/")
 # async def recognition_audio():
-    
+async def send_message(chat_id, text, messanger, IS_AUDIO=False):
+    async with aiohttp.ClientSession() as session:
+        await session.post(f'http://{SENDER_MESSAGE_URL}/send_message/',
+                                params={'chat_id': chat_id, 'text': text,
+                                    'messanger': messanger, 
+                                    'isAudio': str(IS_AUDIO)})
+    return 0    
     
 #     fileName='voice/{}.mp3'
 #     transcript_audio()
@@ -192,6 +198,10 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     answer = await request_data(url, params)
     print(f'{answer=}')
     isVip=False
+
+    if answer=='Internal Server Error':
+        await send_message(400923372, f'Произошла ошибка при генерации ответа на "{text}" для {userID}', 'telegram')
+    
 
     if int(userID) in VIP_USERS:
         isVip=True
