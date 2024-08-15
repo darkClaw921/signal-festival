@@ -42,7 +42,7 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static/"), name="static")
 templates = Jinja2Templates(directory="templates")
 logs = []
-VIP_USERS = [1, 2, 3]
+VIP_USERS = [666, 0, 3]
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # @app.get("/items/")
 # async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
@@ -131,7 +131,7 @@ async def generate_answer(data: Generate):
 
     # Выводим результат
     print(formatted_date)
-    
+
     promt=promt.replace('[date]',f'{formatted_date}')
     pprint(data.__dict__)
     isVip=False

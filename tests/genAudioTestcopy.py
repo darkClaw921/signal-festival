@@ -69,7 +69,7 @@ def speed_change(sound, speed=1.0):
     })
     return sound_with_altered_frame_rate.set_frame_rate(sound.frame_rate)
 
-async def add_effect_to_audio(pahtFile:str):
+async def process_audio(pahtFile:str):
     loop = asyncio.get_event_loop()
     with ProcessPoolExecutor() as executor:
         # Загрузка аудиофайла
@@ -90,11 +90,10 @@ async def add_effect_to_audio(pahtFile:str):
         # Изменение скорости
         final_audio = await loop.run_in_executor(executor, final_audio.speedup, 1.1)
 
-
-
-        final_audio.export(pahtFile, format="mp3")
         # Сохранение результата
+        final_audio.export(pahtFile, format="mp3")
         # await loop.run_in_executor(executor, final_audio.export, pahtFile, 'mp3')
 
 if __name__ == '__main__':
-    asyncio.run(add_effect_to_audio('voice/я живой?.mp3'))
+    # asyncio.run(process_audio('voice/я живой?.mp3'))
+    asyncio.run(process_audio('audio.mp3'))
