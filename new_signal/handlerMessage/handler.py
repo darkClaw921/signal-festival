@@ -188,6 +188,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     userID=chat_id
     if len(history) > 10:
         clear_history(chat_id)
+        history=history[-2:]
         add_message_to_history(chat_id, 'user', text)
         history = get_history(chat_id) 
 
@@ -212,7 +213,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     formatted_date = now.strftime("Сегодня %d %B, %A. Время сейчас %H:%M")
 
     # Выводим результат
-    # print(formatted_date)
+    print(formatted_date)
     promt=('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
     promt=promt.replace('[date]',f'{formatted_date}')
     params = {'text':text,'promt': promt, 
@@ -238,9 +239,13 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     # answer=answer['answer']
     answer=json.loads(answer)
     # print(type(answer))
-    pprint(answer)
+    # pprint(answer)
     answer=answer['answer']
-
+    docs=answer['docs']
+    textDoc=''
+    for doc in docs:
+        textDoc+=f'{doc["page_content"]}\n'
+    pprint(textDoc)
     
     params = {'chat_id': chat_id, 'text': answer, 'messanger': messanger, 'isAudio': IS_AUDIO}
     pprint(params)
@@ -248,7 +253,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
         # await send_message(chat_id, answer, messanger, IS_AUDIO)
     await send_message(chat_id, answer, messanger, IS_AUDIO)
     # await request_data_param(f'http://{SENDER_MESSAGE_URL}/send_message', params)
-
+    add_message_to_history(chat_id, 'system', textDoc)
     add_message_to_history(chat_id, 'system', answer)
     try: 
         add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload='0')
