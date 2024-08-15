@@ -200,7 +200,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     file_location = answer_voice_file
 
     print(f'{file_location=}')
-    add_effect_to_audio(file_location)
+    await add_effect_to_audio(file_location)
 
 
     async def file_remover():

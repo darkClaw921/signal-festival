@@ -48,6 +48,6 @@ if __name__ == "__main__":
 
     url = "https://generate.ai-akedemi-project.ru/api/recognition-audio/"
     file_path = "audio.mp3"  # Путь к вашему аудиофайлу
-    count = 50  # Количество запросов
+    count = 1  # Количество запросов
 
     response_times = asyncio.run(main(url, file_path, count))
