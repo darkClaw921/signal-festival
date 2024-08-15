@@ -201,6 +201,7 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
 
     if answer=='Internal Server Error':
         await send_message(400923372, f'Произошла ошибка при генерации ответа на "{text}" для {userID}', 'telegram')
+        await send_message(1333967466, f'Произошла ошибка при генерации ответа на "{text}" для {userID}', 'telegram')
     
 
     if int(userID) in VIP_USERS:

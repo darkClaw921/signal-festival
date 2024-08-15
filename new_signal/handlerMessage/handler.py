@@ -258,6 +258,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     except Exception as e:
         text=f'Ошибка добавления сообщения в базу данных для пользователя {chat_id} {e}'
         await send_message(400923372, text, 'telegram', IS_AUDIO=False)
+        await send_message(1333967466, text, 'telegram', IS_AUDIO=False)
 
     # await msg.answer(f"Твой ID: {msg.from_user.id}")
     

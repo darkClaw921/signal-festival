@@ -46,8 +46,8 @@ if __name__ == "__main__":
         if file.startswith("response_"):
             os.remove(file)
 
-    # url = "https://generate.ai-akedemi-project.ru/api/recognition-audio/"
-    # file_path = "audio.mp3"  # Путь к вашему аудиофайлу
-    # count = 50  # Количество запросов
+    url = "https://generate.ai-akedemi-project.ru/api/recognition-audio/"
+    file_path = "audio.mp3"  # Путь к вашему аудиофайлу
+    count = 1  # Количество запросов
 
-    # response_times = asyncio.run(main(url, file_path, count))
+    response_times = asyncio.run(main(url, file_path, count))
