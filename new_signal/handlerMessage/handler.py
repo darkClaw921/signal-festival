@@ -240,8 +240,9 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     answer=json.loads(answer)
     # print(type(answer))
     # pprint(answer)
-    answer=answer['answer']
     docs=answer['docs']
+    answer=answer['answer']
+    
     textDoc=''
     for doc in docs:
         textDoc+=f'{doc["page_content"]}\n'
