@@ -203,7 +203,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     date=datetime.now().strftime("%d %H:%M")
     
     # Устанавливаем локаль на русский
-    locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+    # locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
     # Получаем текущую дату и время
     now = datetime.now()
