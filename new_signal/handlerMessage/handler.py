@@ -53,9 +53,15 @@ async def handler_in_command(chat_id: int, command: str, messanger: str,):
     global IS_AUDIO,STATES,QUEST_MANAGER
     if command == '/help':
         await send_message(chat_id, 
-                           """/start - начало работы\n/clear - очистить историю диалога\n
-/startVoice- начать генерировать в голос\n/stopVoice- остановить генерировать в голос\n/reset- перезагрузить модель\n
-/quest <название листа в таблице> - собрать квест\n/sends <сообщение> - рассылка всем пользователям""",
+                           """/start - начало работы\n/clear - очистить историю диалога\n/sendvoice - начать общение голосом""",
+#                            """/start - начало работы\n
+# /clear - очистить историю диалога\n
+# /startVoice- начать генерировать в голос\n
+# /stopVoice- остановить генерировать в голос\n
+# /sendvoice - начать общение голосом
+# /reset- перезагрузить модель\n
+# /quest <название листа в таблице> - собрать квест\n
+# /sends <сообщение> - рассылка всем пользователям""",
                         messanger, IS_AUDIO=False)
     
     elif command == '/startVoice':
