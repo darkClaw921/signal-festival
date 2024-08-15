@@ -29,8 +29,10 @@ from langchain_community.chat_models import ChatYandexGPT
 import tiktoken
 key = os.environ.get('OPENAI_API_KEY')
 # YC_IAM_TOKEN = os.environ.get('YC_IAM_TOKEN')
+vip_api_key=os.environ.get('OPENAI_VIP_API_KEY')
 client = OpenAI(api_key=key)
 asyncClient = AsyncOpenAI(api_key=key)
+vipAsyncClient = AsyncOpenAI(api_key=vip_api_key)
 # chat_model = ChatYandexGPT(folder_id='b1g83bovl5hjt7cl583v', model_uri='gpt://b1g83bovl5hjt7cl583v/yandexgpt')       
 class bcolors:
     HEADER = '\033[95m'
@@ -408,7 +410,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
 
     return answer
 
-  async def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0):
+  async def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0, isVip = False):
     
     #Выборка документов по схожести с вопросом 
     docs = search_index.similarity_search(topic, k=5)
@@ -428,8 +430,12 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     # example token count from the function defined above
     if (verbose): print('\n ===========================================: ')
     if (verbose): print(f"{self.num_tokens_from_messages(messages, 'gpt-3.5-turbo-0301')} токенов использовано на вопрос")
-
-    completion = await asyncClient.chat.completions.create(model=self.modelVersion,
+    if isVip:
+       completion = await vipAsyncClient.chat.completions.create(model=self.modelVersion,
+          messages=messages,
+          temperature=temp)
+    else: 
+        completion = await asyncClient.chat.completions.create(model=self.modelVersion,
         messages=messages,
         temperature=temp)
     totalToken = completion.usage.total_tokens
@@ -471,13 +477,19 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
     print(response.choices[0])
     return response.choices[0].message.content
      
-  async def answer_voice(self,userID:str, text:str):
-
-    response = await asyncClient.audio.speech.create(
+  async def answer_voice(self,userID:str, text:str, isVip = False):
+    if isVip:
+      response = await vipAsyncClient.audio.speech.create(
         model="tts-1",
         voice="shimmer",
         input=text,
     )
+    else:
+      response = await asyncClient.audio.speech.create(
+          model="tts-1",
+          voice="shimmer",
+          input=text,
+      )
     fileName=f"voice/{userID}.mp3"
     response.stream_to_file(fileName)
     return fileName     

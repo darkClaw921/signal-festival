@@ -8,7 +8,6 @@ REDIS_URL=os.getenv('REDIS_URL')
 # redis_password = 'your_redis_password'
 r = redis.Redis(host=REDIS_URL, port=6379, decode_responses=False)
 # r = redis.Redis(host='38.114.102.57', port=6379, decode_responses=False,password=redis_password)
-# r = redis.Redis(host='38.114.102.57', port=6379, decode_responses=False)
 def add_message_to_history(userID:str, role:str, message:str):
     mess = {'role': role, 'content': message}
     r.lpush(userID, json.dumps(mess))
@@ -27,5 +26,3 @@ def get_history(userID:str):
 
 def clear_history(userID:str):
     r.delete(userID)
-
-add_message_to_history('123', 'user', '')

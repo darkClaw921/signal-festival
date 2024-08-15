@@ -42,7 +42,7 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory="static/"), name="static")
 templates = Jinja2Templates(directory="templates")
 logs = []
-
+VIP_USERS = [1, 2, 3]
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # @app.get("/items/")
 # async def read_items(token: Annotated[str, Depends(oauth2_scheme)]):
@@ -92,6 +92,7 @@ class Generate(BaseModel):
     promt: str
     verbose: int
     is_audio: bool
+    userID: int
 
 class Gen_Audio(BaseModel):
     text: str
@@ -112,6 +113,7 @@ async def generate_answer(data: Generate):
     history=data.history
     isAudio=data.is_audio
     promt=data.promt
+    userID=data.userID
 
     if promt.startswith('https://'):
         promt=gpt.load_prompt(promt)
@@ -119,9 +121,12 @@ async def generate_answer(data: Generate):
         promt=data.promt
     
     pprint(data.__dict__)
+    isVip=False
+    if userID in VIP_USERS:
+        isVip=True
     answer, token, price, docs =await gpt.answer_index(system=promt, topic=text, history=history, 
                                                  search_index=MODELS_INDEX[model_index],
-                                                 temp=temp, verbose=0)
+                                                 temp=temp, verbose=0, isVip=isVip)
     return {"answer": answer, 'isAudio': isAudio, 'token': token, 'price': price, 'docs': docs}
 
 
@@ -173,7 +178,12 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     print(f'{params=}')
     answer = await request_data(url, params)
     print(f'{answer=}')
-    answer_voice_file = await gpt.answer_voice(userID=userID, text=answer)
+    isVip=False
+
+    if int(userID) in VIP_USERS:
+        isVip=True
+    
+    answer_voice_file = await gpt.answer_voice(userID=userID, text=answer, isVip=isVip)
     file_location = answer_voice_file
 
     print(f'{file_location=}')
@@ -205,7 +215,11 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
 async def generate_audio(data: Gen_Audio):
     text=data.text
     userID=data.userID
-    answer_voice_file = gpt.answer_voice(userID=userID, text=text)
+    isVip=False
+    if userID in VIP_USERS:
+        isVip=True
+        
+    answer_voice_file = gpt.answer_voice(userID=userID, text=text, isVip=isVip)
     answer_voice_file_path = answer_voice_file
     # print(f'{answer_voice_file=}')
     # answer_voice_file=FSInputFile(answer_voice_file)

@@ -24,24 +24,34 @@ async def fetch(session, url, file_path, user_id):
                 output_file.write(response_content)
             
             end_time = time.time()
-            return end_time - start_time  # Возвращаем время ответа
+            # print(f"запрос {user_id} завершен за {end_time - start_time:.4f} секунд")
+            return end_time - start_time,output_file_path # Возвращаем время ответа
 
 # async def main(url, file_path, user_id, count):
 #     async with aiohttp.ClientSession() as session:
 #         tasks = [fetch(session, url, file_path, user_id) for _ in range(count)]
 #         response_times = await asyncio.gather(*tasks)
 #         return response_times
+# async def main(url, file_path, count):
+#     async with aiohttp.ClientSession() as session:
+#         tasks = []
+#         for i in range(count):
+#             user_id = random.randint(1000, 9999)  # Генерация случайного userID
+#             tasks.append(fetch(session, url, file_path, user_id))
+#             delay = random.uniform(20, 50)  # Генерация случайной задержки от 1 до 3 секунд
+#             await asyncio.sleep(delay)  # Задержка перед следующим запросом
+
+#         response_times = await asyncio.gather(*tasks)
+#         return response_times
 async def main(url, file_path, count):
     async with aiohttp.ClientSession() as session:
-        tasks = []
         for i in range(count):
             user_id = random.randint(1000, 9999)  # Генерация случайного userID
-            tasks.append(fetch(session, url, file_path, user_id))
-            delay = random.uniform(1, 3)  # Генерация случайной задержки от 1 до 3 секунд
-            await asyncio.sleep(delay)  # Задержка перед следующим запросом
+            time_taken, output_file_path = await fetch(session, url, file_path, user_id)
+            print(f"Запрос {i + 1}: {time_taken:.4f} секунд, файл сохранен как: {output_file_path}")
 
-        response_times = await asyncio.gather(*tasks)
-        return response_times
+            # delay = random.uniform(1, 3)  # Генерация случайной задержки от 1 до 3 секунд
+            # await asyncio.sleep(delay)  # Задержка перед следующим запросом
     
 def calculate_statistics(response_times):
     max_time = max(response_times)
@@ -58,7 +68,7 @@ if __name__ == "__main__":
     url = "https://generate.ai-akedemi-project.ru/api/recognition-audio/"
     file_path = "audio.mp3"  # Путь к вашему аудиофайлу
     user_id = 1234  # Ваш userID
-    count = 5 # Количество запросов
+    count = 10 # Количество запросов
 
     response_times = asyncio.run(main(url, file_path, count))
 

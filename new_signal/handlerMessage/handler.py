@@ -8,6 +8,9 @@ from googleSheet import parse_google_sheet
 from qvest import QuestManager
 from postgreWork import get_all_user_ids, add_new_user, add_new_message
 import json
+import locale
+from datetime import datetime
+
 load_dotenv()
 
 PORT_GENERATE_ANSWER=os.getenv('PORT_GENERATE_ANSWER')
@@ -199,13 +202,24 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
 
     date=datetime.now().strftime("%d %H:%M")
     
-    
+    # Устанавливаем локаль на русский
+    locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
+
+    # Получаем текущую дату и время
+    now = datetime.now()
+
+    # Форматируем дату и время
+    formatted_date = now.strftime("Сегодня %d %B, %A. Время сейчас %H:%M")
+
+    # Выводим результат
+    # print(formatted_date)
     promt=('https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing')
-    promt=promt.replace('[date]',f'{date}')
+    promt=promt.replace('[date]',f'{formatted_date}')
     params = {'text':text,'promt': promt, 
               'history': history, 'model_index': 'main', 
               'temp': 0.5, 'verbose': 1,
-              'is_audio': IS_AUDIO}
+              'is_audio': IS_AUDIO,
+              'userID': userID}
     
     try:
         # answer=await request_data(f'http://{IP_SERVER}:{PORT_GENERATE_ANSWER}/generate-answer', params)
