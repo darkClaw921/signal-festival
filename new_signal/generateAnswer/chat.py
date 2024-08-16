@@ -199,8 +199,12 @@ class GPT():
     splitter = CharacterTextSplitter(separator="==========", chunk_size=500, chunk_overlap=100)
 
     for chunk in splitter.split_text(data):
-      # print(f'{'=':=^60}')
+      # print()
       # print(chunk)
+      with open('chunk.txt', 'a') as f:
+        split=f'{'=':=^120}'
+        text=f'{split} \n{chunk}\n'
+        f.write(text)
       source_chunks.append(Document(page_content=chunk, metadata={}))
 
     # Создание индексов документа
@@ -415,7 +419,7 @@ See https://github.com/openai/openai-python/blob/main/chatml.md for information 
   async def answer_index(self, system, topic, history:list, search_index, temp = 1, verbose = 0, isVip = False):
     
     #Выборка документов по схожести с вопросом 
-    docs = search_index.similarity_search(topic, k=3)
+    docs = search_index.similarity_search(topic, k=5)
     if (verbose): print('\n ===========================================: ')
     message_content = re.sub(r'\n{2}', ' ', '\n '.join([f'\nДокумент №{i+1}\n=====================' + doc.page_content + '\n' for i, doc in enumerate(docs)]))
     if (verbose): print('message_content :\n ======================================== \n', message_content)

@@ -6,6 +6,7 @@ __pycache__/
 # *.html
 # C extensions
 *.so
+chunk.txt
 *.json
 *.cfg
 *~

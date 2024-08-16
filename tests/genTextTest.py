@@ -58,3 +58,21 @@ if __name__ == "__main__":
 'Открывает площадку Сигнал 16 августа.']
     
     response_times = asyncio.run(main(url, questions, userID))
+
+#     import requests
+#     url='http://localhost:5004/generate-answer/'
+#     params={
+        
+#   "text": "когда играет Wicca",
+#   "model_index": "main",
+#   "temp": 0.5,
+#   "history": [{"role": "user", "content": "привет"}],
+#   "promt": "https://docs.google.com/document/d/1J9F110b3UPABPeWd5pFg0mFoR_5s0CZYlMqR0SYF_wA/edit?usp=sharing",
+#   "verbose": 1,
+#   "is_audio": False,
+#   "userID": 1,
+
+#     }
+#     response = requests.get(url, json=params)
+#     asnwer = response.text
+#     print(asnwer)
