@@ -165,6 +165,18 @@ async def send_message(chat_id, text, messanger, IS_AUDIO=False):
 #     fileName='voice/{}.mp3'
 #     transcript_audio()
 # https://generate.ai-akedemi-project.ru/recognition-audio/
+import re
+
+def remove_links(text):
+    # Регулярное выражение для поиска ссылок
+    link_pattern = r'https?://\S+|www\.\S+'
+    # Замена найденных ссылок на пустую строку
+    cleaned_text = re.sub(link_pattern, '', text)
+    cleaned_text=cleaned_text.replace('(','')
+    cleaned_text=cleaned_text.replace('[','')
+    cleaned_text=cleaned_text.replace(']','')
+    return cleaned_text.strip()
+
 @app.post("/api/recognition-audio/")
 async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     # Проверяем, что файл имеет расширение mp3
@@ -198,11 +210,12 @@ async def upload_audio(userID: str = Form(...), file: UploadFile = File(...)):
     answer = await request_data(url, params)
     print(f'{answer=}')
     isVip=False
-
+    
     if answer=='Internal Server Error':
         await send_message(400923372, f'Произошла ошибка при генерации ответа на "{text}" для {userID}', 'telegram')
         await send_message(1333967466, f'Произошла ошибка при генерации ответа на "{text}" для {userID}', 'telegram')
     
+    answer=remove_links(answer)
 
     if int(userID) in VIP_USERS:
         isVip=True

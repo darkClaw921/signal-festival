@@ -155,6 +155,7 @@ async def send_message(chat_id: int, text: str, messanger: str, isAudio: str):
                 'text': text,
                 'parse_mode': 'Markdown'  # или 'Markdown'
             }
+            
             response = requests.post(url, params=params)
             # data = response.json()
             # pprint(data)
