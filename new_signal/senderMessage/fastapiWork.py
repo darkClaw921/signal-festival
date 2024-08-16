@@ -152,7 +152,8 @@ async def send_message(chat_id: int, text: str, messanger: str, isAudio: str):
             url = f'https://api.telegram.org/bot{TOKEN_BOT}/sendMessage'
             params = {
                 'chat_id': chat_id,
-                'text': text
+                'text': text,
+                'parse_mode': 'Markdown'  # или 'Markdown'
             }
             response = requests.post(url, params=params)
             # data = response.json()
