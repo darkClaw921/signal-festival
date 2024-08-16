@@ -10,7 +10,7 @@ from postgreWork import get_all_user_ids, add_new_user, add_new_message
 import json
 import locale
 from datetime import datetime
-
+import time
 load_dotenv()
 
 PORT_GENERATE_ANSWER=os.getenv('PORT_GENERATE_ANSWER')
@@ -177,6 +177,8 @@ async def process_kvest_answer(userID, text,messanger):
 
 
 async def handler_in_message(chat_id: int, text: str, messanger: str,):
+    start_time = time.time()
+
     global IS_AUDIO, STATES, QUEST_MANAGER
     add_message_to_history(chat_id,'user', text)
     history = get_history(chat_id)
@@ -194,7 +196,9 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     userID=chat_id
     if len(history) > 15:
         clear_history(chat_id)
-        # history=history[-2:]
+        history=history[-2:]
+        for message in history:
+            add_message_to_history(chat_id, message['role'], message['content'])
         add_message_to_history(chat_id, 'user', text)
         history = get_history(chat_id) 
 
@@ -214,7 +218,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     
     params = {'text':text,'promt': promt, 
               'history': history, 'model_index': 'main', 
-              'temp': 0.5, 'verbose': 1,
+              'temp': 0.5, 'verbose': 0,
               'is_audio': IS_AUDIO,
               'userID': userID}
     
@@ -242,7 +246,7 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     textDoc=''
     for doc in docs:
         textDoc+=f'{doc["page_content"]}\n'
-    pprint(textDoc)
+    # pprint(textDoc)
     
     params = {'chat_id': chat_id, 'text': answer, 'messanger': messanger, 'isAudio': IS_AUDIO}
     pprint(params)
@@ -252,8 +256,12 @@ async def handler_in_message(chat_id: int, text: str, messanger: str,):
     # await request_data_param(f'http://{SENDER_MESSAGE_URL}/send_message', params)
     add_message_to_history(chat_id, 'system', textDoc)
     add_message_to_history(chat_id, 'system', answer)
+
+
+    end_time = time.time()
+    workTime=end_time-start_time
     try: 
-        add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload='0')
+        add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=text, type_chat='user', payload=f'{int(workTime)}')
         add_new_message(messageID=chat_id, chatID=chat_id, userID=chat_id, text=answer, type_chat='system', payload=answer)
     except Exception as e:
         text=f'Ошибка добавления сообщения в базу данных для пользователя {chat_id} {e}'
