@@ -131,6 +131,7 @@ async def generate_answer(data: Generate):
 
     # Выводим результат
     print(formatted_date)
+    
 
     promt=promt.replace('[date]',f'{formatted_date}')
     pprint(data.__dict__)
